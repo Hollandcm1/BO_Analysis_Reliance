@@ -1,0 +1,10 @@
+
+# Ignore all CSV files in the data directory
+data/*.csv
+data/*.xlsx
+
+# But do not ignore example_data.csv
+!data/example_data.csv
+!data/example_data.xlsx
+
+
