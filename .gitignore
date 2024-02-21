@@ -20,3 +20,6 @@ data/raw/*.xlsx
 !data/raw/example_data.xlsx
 
 
+
+**/.DS_Store
+
