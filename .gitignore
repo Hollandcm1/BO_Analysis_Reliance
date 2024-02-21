@@ -3,8 +3,20 @@
 data/*.csv
 data/*.xlsx
 
+data/processed/*.csv
+data/processed/*.xlsx
+
+data/raw/*.csv
+data/raw/*.xlsx
+
 # But do not ignore example_data.csv
 !data/example_data.csv
 !data/example_data.xlsx
+
+!data/processed/example_data.csv
+!data/processed/example_data.xlsx
+
+!data/raw/example_data.csv
+!data/raw/example_data.xlsx
 
 

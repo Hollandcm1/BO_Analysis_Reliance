@@ -1,0 +1,6 @@
+# Setup
+
+library(here)
+library(dplyr)
+library(tidyr)
+here::i_am("scripts/00_Setup.R")

@@ -1,0 +1,7 @@
+# Main
+
+rm(list = ls())
+path <- 'scripts/'
+source(paste0(path, '00_Setup.R'))
+source(paste0(path, '01_Load_Data.R'))
+source(paste0(path, '02_Preprocessing.R'))
