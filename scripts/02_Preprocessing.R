@@ -78,6 +78,9 @@ data_long$Block <- as.numeric(data_long$Block)
 data_long$Performance_Before <- data_long$Performance_Before / 50
 data_long$Performance_After <- data_long$Performance_After / 50
 
+# Calculate Performance Difference
+data_long$Performance_Difference <- data_long$Performance_After - data_long$Performance_Before
+
 # New data
 # str(data)
 # str(data_long)

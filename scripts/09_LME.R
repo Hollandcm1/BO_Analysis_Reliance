@@ -42,7 +42,7 @@ g1 <- ggplot(data_long, aes(x=Confidence, y=Trust, color=Condition, group=Condit
   ylim(0, 100) + 
   xlim(0, 100)
 print(g1)
-ggsave(here('output','figures','08_Trust_by_Confidence_by_Condition.png'), 
+ggsave(here('output','figures','09_Trust_by_Confidence_by_Condition.png'), 
        plot = g1, device = device, width = width, height = height, units = units, dpi = dpi)
 
 g2 <- ggplot(data_long, aes(x=Confidence, y=Trust, color=Condition, group=Condition)) + 
@@ -54,7 +54,7 @@ g2 <- ggplot(data_long, aes(x=Confidence, y=Trust, color=Condition, group=Condit
   ylim(0, 100) + 
   xlim(0, 100)
 print(g2)
-ggsave(here('output','figures','08_Trust_by_Confidence_by_Condition_(Linear_Model).png'), 
+ggsave(here('output','figures','09_Trust_by_Confidence_by_Condition_(Linear_Model).png'), 
        plot = g2, device = device, width = width, height = height, units = units, dpi = dpi)
 
 g3 <- ggplot(data_long, aes(x=Confidence, y=Trust)) + 
@@ -65,7 +65,7 @@ g3 <- ggplot(data_long, aes(x=Confidence, y=Trust)) +
   ylim(0, 100) + 
   xlim(0, 100)
 print(g3)
-ggsave(here('output','figures','08_Trust_by_Confidence.png'), 
+ggsave(here('output','figures','09_Trust_by_Confidence.png'), 
        plot = g3, device = device, width = width, height = height, units = units, dpi = dpi)
 
 
