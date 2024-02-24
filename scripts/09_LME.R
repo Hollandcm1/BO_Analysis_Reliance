@@ -29,6 +29,19 @@ model_5 <- lmer(data = data_long, Trust ~ Condition * as.factor(Reliability) * C
 summary(model_5)
 tab_model(model_5)
 
+model_6 <- lmer(data = data_long, Trust ~ Condition * Reliability * Confidence + (1 | Participant) + (1 | Condition))
+summary(model_6)
+tab_model(model_6)
+
+model_7 <- lmer(data = data_long, Trust ~ Condition * Reliability * Confidence * Reliance + (1 | Participant))
+summary(model_7)
+tab_model(model_7)
+
+model_8 <- lmer(data = data_long, Reliance ~ Condition * Reliability * Confidence * Trust + (1 | Participant))
+summary(model_8)
+tab_model(model_8)
+
+
 
 
 # Visualize Data
@@ -68,5 +81,61 @@ print(g3)
 ggsave(here('output','figures','09_Trust_by_Confidence.png'), 
        plot = g3, device = device, width = width, height = height, units = units, dpi = dpi)
 
+
+g4 <- ggplot(data_long, aes(x = Trust, y = Reliance, color = as.factor(Reliability), group = as.factor(Reliability))) +
+  geom_jitter(size = 0.5, alpha = 0.3) + 
+  geom_smooth(method = 'lm', alpha = 0.2) + 
+  facet_wrap(.~Condition, scales='free') + 
+  theme_classic() +
+  theme(axis.line=element_line()) +
+  labs(title = "Trust as a function of self-confidence",
+       x = "Trust",
+       y = "Reliance",
+       color = "Reliability") +
+  ylim(0, 1) +
+  xlim(0, 100)
+print(g4)
+
+
+g5 <- ggplot(data_long, aes(x = Confidence, y = Trust, color = as.factor(Reliability), group = as.factor(Reliability))) +
+  geom_jitter(size = 0.5, alpha = 0.3) + 
+  geom_smooth(method = 'lm', alpha = 0.2) + 
+  facet_wrap(.~Condition, scales='free') + 
+  theme_classic() +
+  theme(axis.line=element_line()) +
+  labs(title = "Trust as a function of self-confidence",
+       x = "Confidence",
+       y = "Trust",
+       color = "Reliability") +
+  ylim(0, 100) +
+  xlim(0, 100)
+print(g5)
+
+
+g6 <- ggplot(data_long, aes(x = Confidence, y = Reliance, color = as.factor(Reliability), group = as.factor(Reliability))) +
+  geom_jitter(size = 0.5, alpha = 0.3) + 
+  geom_smooth(method = 'lm', alpha = 0.2) + 
+  facet_wrap(.~Condition, scales='free') + 
+  theme_classic() +
+  theme(axis.line=element_line()) +
+  labs(title = "Trust as a function of self-confidence",
+       x = "Confidence",
+       y = "Reliance",
+       color = "Reliability") +
+  ylim(0, 1) +
+  xlim(0, 100)
+print(g6)
+
+
+
+# dt[, 
+#    list(meanRT=mean(RT), sdRT=sd(RT)), 
+#    by=.(Condition, Block, Participant)
+#    ][, list(meanRT=mean(meanRT), sdRT=mean(sdRT)), 
+#       by=.(Condition, Block)]
+# 
+# dt %>% 
+#   group_by(Condition, Block, Participant) %>% 
+#   summarise(meanRT = mean(RT), sdRT = sd(RT))
 
 
