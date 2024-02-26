@@ -1,15 +1,15 @@
 
 Error: Participant
           Df Sum Sq Mean Sq F value Pr(>F)
-Condition  1    891   890.9   1.082  0.301
-Residuals 75  61723   823.0               
+Condition  1    622   622.0   0.691  0.408
+Residuals 78  70215   900.2               
 
 Error: Participant:Block
                 Df Sum Sq Mean Sq F value Pr(>F)
-Block            1    1.0    0.96   0.025  0.876
-Condition:Block  1   59.1   59.14   1.507  0.223
-Residuals       75 2943.0   39.24               
+Block            1    0.5    0.50   0.013  0.909
+Condition:Block  1   54.9   54.95   1.452  0.232
+Residuals       78 2951.8   37.84               
 
 Error: Within
            Df Sum Sq Mean Sq F value Pr(>F)
-Residuals 308   4895   15.89               
+Residuals 320   4906   15.33               
