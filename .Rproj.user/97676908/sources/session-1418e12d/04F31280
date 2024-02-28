@@ -1,0 +1,27 @@
+{
+    "id": "04F31280",
+    "path": "~/Documents/MATLAB/Blue_Orange_Reliance/BO_Reliance_Analysis/scripts/22_All_Conditions_Trust.R",
+    "project_path": "scripts/22_All_Conditions_Trust.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": true,
+    "created": 1709040036006.0,
+    "source_on_save": false,
+    "relative_order": 7,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "73,0",
+        "scrollLine": "50"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1709040313,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1709044574170,
+    "read_only": false,
+    "read_only_alternatives": []
+}

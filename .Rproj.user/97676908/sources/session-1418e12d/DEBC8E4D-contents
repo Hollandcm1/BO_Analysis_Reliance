@@ -41,6 +41,14 @@ model_8 <- lmer(data = data_long, Reliance ~ Condition * Reliability * Confidenc
 summary(model_8)
 tab_model(model_8)
 
+model_9 <- lmer(data = data_long, Performance_Before ~ Trust * Condition * Reliability * Confidence + (1 | Participant))
+summary(model_9)
+tab_model(model_9)
+
+model_10 <- lmer(data = data_long, Performance_After ~ Trust * Condition * Reliability * Confidence + (1 | Participant))
+summary(model_10)
+tab_model(model_10)
+
 
 # Visualize
 g1 <- ggplot(data_all_conditions_long, aes(x = Confidence, y = Trust, color = as.factor(Block), group = as.factor(Block))) +
