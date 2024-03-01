@@ -121,7 +121,7 @@ g6 <- ggplot(data_long, aes(x = Confidence, y = Reliance, color = as.factor(Reli
   facet_wrap(.~Condition, scales='free') + 
   theme_classic() +
   theme(axis.line=element_line()) +
-  labs(title = "Trust as a function of self-confidence",
+  labs(title = "Reliance as a function of self-confidence",
        x = "Confidence",
        y = "Reliance",
        color = "Reliability") +
@@ -130,6 +130,34 @@ g6 <- ggplot(data_long, aes(x = Confidence, y = Reliance, color = as.factor(Reli
 print(g6)
 ggsave(here('output','figures','09_Reliance_by_Confidence_by_Reliability_by_Condition.png'), 
        plot = g6, device = device, width = width, height = height, units = units, dpi = dpi)
+
+
+g7 <- ggplot(data_long, aes(x = Trust, y = Reliance)) +
+  geom_jitter(size = 0.5, alpha = 0.3) + 
+  geom_smooth(method = 'lm', alpha = 0.2) + 
+  facet_wrap(.~Condition, scales='free') + 
+  theme_classic() +
+  theme(axis.line=element_line()) +
+  labs(title = "Dependance as a function of Trust",
+       x = "Trust",
+       y = "Dependance") +
+  ylim(0, 1) +
+  xlim(0, 100)
+print(g7)
+
+g8 <- ggplot(data_long, aes(x = Trust, y = Reliance, color = as.factor(Reliability), group = Reliability)) +
+  geom_jitter(size = 0.5, alpha = 0.3) + 
+  geom_smooth(method = 'lm', alpha = 0.2) + 
+  facet_wrap(.~Condition, scales='free') + 
+  theme_classic() +
+  theme(axis.line=element_line()) +
+  labs(title = "Dependance as a function of Trust and Reliability",
+       x = "Trust",
+       y = "Dependance") +
+  ylim(0, 1) +
+  xlim(0, 100)
+print(g8)
+
 
 
 

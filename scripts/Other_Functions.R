@@ -16,6 +16,7 @@ load_processed_data_long <- function() {
   # Correct Factors
   data_long$Participant <- as.factor(data_long$Participant)
   data_long$Condition <- as.factor(data_long$Condition)
+  data_long$Block <- as.factor(data_long$Block)
   
   return(data_long)
 }
@@ -36,6 +37,7 @@ load_processed_data_all_conditions_long <- function() {
   # Correct Factors
   data_long$Participant <- as.factor(data_long$Participant)
   data_long$Condition <- as.factor(data_long$Condition)
+  data_long$Block <- as.factor(data_long$Block)
   
   return(data_long)
 }

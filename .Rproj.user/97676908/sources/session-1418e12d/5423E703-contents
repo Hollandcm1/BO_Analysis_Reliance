@@ -3,6 +3,7 @@
 source(here('scripts', 'Other_Functions.R'))
 data <- load_processed_data()
 data_long <- load_processed_data_long()
+data_long$Block <- as.numeric(data_long$Block)
 
 # figure size and characteristics
 source(here('scripts', 'Figure_Parameters.R'))
@@ -73,3 +74,7 @@ g3 <- ggplot(summary_data, aes(x = Block, y = Average_Reliance, group = Conditio
 print(g3)
 ggsave(here('output','figures','03_Dependence_by_Block_by_Condition_with_SE_as_Ribbon.png'), 
        plot = g3, device = device, width = width, height = height, units = units, dpi = dpi)
+
+
+# 
+g4 <- ggplot()

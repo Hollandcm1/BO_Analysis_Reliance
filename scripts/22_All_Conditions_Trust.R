@@ -74,3 +74,4 @@ g3 <- ggplot(summary_data, aes(x = Block, y = Average_Trust, group = Condition, 
 print(g3)
 ggsave(here('output','figures','2_Trust_by_Block_by_Condition_with_SE_as_Ribbon.png'), 
        plot = g3, device = device, width = width, height = height, units = units, dpi = dpi)
+

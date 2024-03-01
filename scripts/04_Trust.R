@@ -10,6 +10,9 @@ model_summary <- summary(model)
 capture.output(model_summary, file = here('output','tables','04_Trust_Simple_Anova.txt'))
 tab_model(model)
 
+#mauchly_result <- mauchly.test(model)
+#print(mauchly_result)
+
 # Figure Parameters
 source(here('scripts', 'Figure_Parameters.R'))
 
