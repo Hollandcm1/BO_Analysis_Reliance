@@ -41,9 +41,9 @@ g2 <- ggplot(summary_data, aes(x = Block, y = Average_Reliance, group = Conditio
                 width = 0.4, position = position_dodge(width = dodge_width)) +
   theme_classic() +
   scale_color_manual(values = c("Decreasing" = colour.decreasing, "Increasing" = colour.increasing)) +
-  labs(title = "Average Reliance across Conditions with Standard Error",
+  labs(title = "Average Dependence across Conditions with Standard Error",
        x = "Block",
-       y = "Reliance",
+       y = "Dependence",
        color = "Condition") +
   ylim(0, 1) + 
   scale_x_continuous(breaks = seq(1, 6, 1)) +
@@ -63,9 +63,9 @@ g3 <- ggplot(summary_data, aes(x = Block, y = Average_Reliance, group = Conditio
   theme_classic() +
   scale_color_manual(values = c("Decreasing" = colour.decreasing, "Increasing" = colour.increasing)) +
   scale_fill_manual(values = c("Decreasing" = colour.decreasing, "Increasing" = colour.increasing)) +
-  labs(title = "Average Reliance across Conditions with Standard Error",
+  labs(title = "Average Dependence across Conditions with Standard Error",
        x = "Block",
-       y = "Reliance",
+       y = "Dependence",
        color = "Condition") +
   ylim(0, 1) + 
   scale_x_continuous(breaks = seq(1, 6, 1)) +
