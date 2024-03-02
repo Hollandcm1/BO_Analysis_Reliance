@@ -1,0 +1,11 @@
+Anova Table (Type 3 tests)
+
+Response: Performance_Before
+           Effect           df  MSE      F  ges p.value
+1       Condition        1, 78 0.06   0.79 .007    .378
+2           Block 4.73, 368.97 0.01 3.12 * .013    .010
+3 Condition:Block 4.73, 368.97 0.01   1.07 .004    .376
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘+’ 0.1 ‘ ’ 1
+
+Sphericity correction method: GG 

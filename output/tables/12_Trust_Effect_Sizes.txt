@@ -1,0 +1,9 @@
+# Effect Size for ANOVA (Type III)
+
+Parameter       | Eta2 (partial) |       95% CI
+-----------------------------------------------
+Condition       |       6.52e-04 | [0.00, 1.00]
+Block           |           0.02 | [0.00, 1.00]
+Condition:Block |       5.98e-03 | [0.00, 1.00]
+
+- One-sided CIs: upper bound fixed at [1.00].

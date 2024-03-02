@@ -1,0 +1,11 @@
+Anova Table (Type 3 tests)
+
+Response: Trust
+           Effect           df    MSE    F   ges p.value
+1       Condition        1, 78 963.32 0.05 <.001    .822
+2           Block 3.59, 280.29  27.49 1.27  .002    .285
+3 Condition:Block 3.59, 280.29  27.49 0.47 <.001    .738
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘+’ 0.1 ‘ ’ 1
+
+Sphericity correction method: GG 
