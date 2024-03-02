@@ -27,3 +27,5 @@ data/raw/*.xlsx
 # R data files
 *.RData
 *.Rhistory
+/.Rproj.user
+/.Rproj.user
