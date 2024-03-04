@@ -51,7 +51,7 @@ tab_model(model_10)
 
 
 # Visualize
-g1 <- ggplot(data_all_conditions_long, aes(x = Confidence, y = Trust, color = as.factor(Block), group = as.factor(Block))) +
+g1 <- ggplot(data_long, aes(x = Confidence, y = Trust, color = as.factor(Block), group = as.factor(Block))) +
   geom_jitter(size = 0.5, alpha = 0.3) + 
   geom_smooth(method = 'lm', alpha = 0.2) + 
   facet_wrap(.~Condition, scales='free') + 
@@ -65,7 +65,7 @@ g1 <- ggplot(data_all_conditions_long, aes(x = Confidence, y = Trust, color = as
   xlim(0, 100)
 print(g1)
 
-g2 <- ggplot(data_all_conditions_long, aes(x = Confidence, y = Trust, color = as.factor(Reliability), group = as.factor(Reliability))) +
+g2 <- ggplot(data_long, aes(x = Confidence, y = Trust, color = as.factor(Reliability), group = as.factor(Reliability))) +
   geom_jitter(size = 0.5, alpha = 0.3) + 
   geom_smooth(method = 'lm', alpha = 0.2) + 
   facet_wrap(.~Condition, scales='free') + 
@@ -74,7 +74,7 @@ g2 <- ggplot(data_all_conditions_long, aes(x = Confidence, y = Trust, color = as
   labs(title = "Trust as a function of self-confidence",
        x = "Self-confidence",
        y = "Trust",
-       color = "Block") +
+       color = "Reliability") +
   ylim(0, 100) +
   xlim(0, 100)
 print(g2)
@@ -86,7 +86,7 @@ g4 <- ggplot(data_long, aes(x = Trust, y = Reliance, color = as.factor(Reliabili
   facet_wrap(.~Condition, scales='free') + 
   theme_classic() +
   theme(axis.line=element_line()) +
-  labs(title = "Trust as a function of self-confidence",
+  labs(title = "Reliance as a funciton of Trust",
        x = "Trust",
        y = "Reliance",
        color = "Reliability") +

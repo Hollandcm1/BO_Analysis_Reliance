@@ -29,3 +29,5 @@ data/raw/*.xlsx
 *.Rhistory
 /.Rproj.user
 /.Rproj.user
+/.Rproj.user
+/.Rproj.user
