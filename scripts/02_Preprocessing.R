@@ -1,7 +1,5 @@
 # Preprocessing
 
-# Origianl data
-# str(data)
 
 # Remove uneeded data
 data <- filter(data, condition <= 2) # condition 1 and 2 are 50% decreasing
