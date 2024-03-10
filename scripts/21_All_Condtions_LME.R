@@ -72,9 +72,16 @@ flexplot(Reliance~Trust + Condition, data=data_long, method="lm")
 flexplot(Reliance~Confidence + Reliability_factor | Condition, data=data_long, method="lm")
 emmeans(model_8, c("Condition", "Reliability"))
 
+data_long$Reliability_factor <- as.factor(data_long$Reliability)
+flexplot(Trust~Confidence + Reliability_factor, data=data_long, method="lm")
+flexplot(Trust~Confidence, data=data_long, method="lm")
+
+
 emmeans_model <- emmeans(model_8, ~ Condition * Reliability * Confidence * Trust)
 contrast_results <- contrast(emmeans_model, "pairwise", by = "Condition")
 summary(contrast_results, adjust = "bonferroni")
+
+estimates(model_8)
 
 mean_confidence <- mean(data_long$Confidence, na.rm = TRUE)
 sd_confidence <- sd(data_long$Confidence, na.rm = TRUE)
