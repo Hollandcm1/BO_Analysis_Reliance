@@ -76,6 +76,7 @@ data_long$Reliability_factor <- as.factor(data_long$Reliability)
 flexplot(Trust~Confidence + Reliability_factor, data=data_long, method="lm")
 flexplot(Trust~Confidence, data=data_long, method="lm")
 
+flexplot(Reliance~Trust + Confidence + Reliability | Condition, data=data_long, method="lm")
 
 emmeans_model <- emmeans(model_8, ~ Condition * Reliability * Confidence * Trust)
 contrast_results <- contrast(emmeans_model, "pairwise", by = "Condition")
@@ -165,6 +166,11 @@ g6 <- ggplot(data_long, aes(x = Confidence, y = Reliance, color = as.factor(Reli
 print(g6)
 ggsave(here('output','figures','22_Reliance_by_Confidence_by_Reliability_by_Condition.png'), 
        plot = g6, device = device, width = width, height = height, units = units, dpi = dpi)
+
+
+flexplot(Trust~Confidence, data = data_long, method = "lm")
+
+flexplot(Reliance~Trust + Confidence, data = data_long, method = "lm")
 
 
 

@@ -53,7 +53,6 @@ model_10 <- lmer(data = data_long, Reliance_100 ~ Condition * Reliability * Conf
 summary(model_10)
 tab_model(model_10)
 
-# Use this model
 model_11 <- lmer(data = data_long, Reliance_100 ~ Reliability * Confidence * Trust + (1 + Participant | Condition))
 summary(model_11)
 tab_model(model_11)
@@ -163,6 +162,61 @@ g7 <- ggplot(data_long, aes(x = Trust, y = Reliance)) +
   xlim(0, 100)
 print(g7)
 
+g7_0 <- ggplot(data_long, aes(x = Trust, y = Reliance)) +
+  geom_jitter(size = 0.5, alpha = 0.3) + 
+  geom_smooth(method = 'lm', alpha = 0.2) + 
+  theme_classic() +
+  theme(axis.line=element_line()) +
+  labs(title = "Dependance as a function of Trust",
+       x = "Trust",
+       y = "Dependance")
+print(g7_0)
+
+g7_1 <- ggplot(data_long, aes(x = Trust, y = Reliance, color = Condition, group = Condition)) +
+  geom_jitter(size = 0.5, alpha = 0.3) + 
+  geom_smooth(method = 'lm', alpha = 0.2) + 
+  theme_classic() +
+  theme(axis.line=element_line()) +
+  labs(title = "Dependance as a function of Trust and Condition",
+       x = "Trust",
+       y = "Dependance") 
+print(g7_1)
+
+g7_2 <- ggplot(data_long, aes(x = Trust, y = Reliance, color = as.factor(Reliability), group = as.factor(Reliability))) +
+  geom_jitter(size = 0.5, alpha = 0.3) + 
+  geom_smooth(method = 'lm', alpha = 0.2) + 
+  theme_classic() +
+  theme(axis.line=element_line()) +
+  labs(title = "Dependance as a function of Trust and Reliability",
+       x = "Trust",
+       y = "Dependance") +
+  facet_wrap(.~Condition)
+print(g7_2)
+
+data_long <- data_long %>%
+  mutate(ConfidenceQuantile = ntile(Confidence, 3))
+data_long$ConfidenceQuantile <- as.factor(data_long$ConfidenceQuantile)
+#rename ConfidenceQuartile as low, medium, and high
+data_long <- data_long %>%
+  mutate(ConfidenceQuantile = case_when(
+    ConfidenceQuantile == 1 ~ "High Confidence",
+    ConfidenceQuantile == 2 ~ "Medium Confidence",
+    ConfidenceQuantile == 3 ~ "Low Confidence",
+    TRUE ~ as.factor(ConfidenceQuantile) # This line is optional, to handle unexpected values
+  ))
+g7_3 <- ggplot(data_long, aes(x = Trust, y = Reliance, color = Reliability_Factor, group = Reliability_Factor)) +
+  geom_jitter(size = 0.5, alpha = 0.3) + 
+  geom_smooth(method = 'lm', alpha = 0.2) + 
+  theme_classic() +
+  theme(axis.line=element_line()) +
+  labs(title = "",
+       x = "Trust",
+       y = "Dependance") +
+  facet_wrap(~interaction(Condition, ConfidenceQuantile), ncol = 2) 
+print(g7_3)
+
+
+
 g8 <- ggplot(data_long, aes(x = Trust, y = Reliance, color = as.factor(Reliability), group = Reliability)) +
   geom_jitter(size = 0.5, alpha = 0.3) + 
   geom_smooth(method = 'lm', alpha = 0.2) + 
@@ -202,16 +256,22 @@ data_long <- data_long %>%
   mutate(ConfidenceQuantile = ntile(Confidence, 3))
 
 
+
+
 data_long$ConfidenceQuantile <- as.factor(data_long$ConfidenceQuantile)
-ggplot(data_long, aes(x=Trust, y=Reliance, color=ConfidenceQuantile, group=ConfidenceQuantile)) +
+g9 <- ggplot(data_long, aes(x=Trust, y=Reliance, color=ConfidenceQuantile, group=ConfidenceQuantile)) +
   geom_smooth(alpha = 0.25, method = 'lm') +
-  geom_jitter(width = 0.2, height = 0, alpha = 0.5) +
+  geom_point(alpha = 0.5) +
+  #geom_jitter(width = 0.2, height = 0, alpha = 0.5) +
   theme_classic() +
   labs(title = "Dependance by Trust by Self-Confidence", x = "Trust", y = "Dependance") +
   facet_wrap(.~Condition) +
   ylim(0, 1) +
   scale_color_discrete(name = "Self-Confidence Binned",
                        labels = c("Low", "Medium", "High"))
+print(g9)
+ggsave(here('output','figures', '09_Reliance_by_Trust_by_Self-Confidence_Binned_by_Condition.png'), 
+       plot = g9, device = device, width = width, height = height, units = units, dpi = dpi)
 
 # dt[, 
 #    list(meanRT=mean(RT), sdRT=sd(RT)), 
@@ -223,4 +283,6 @@ ggplot(data_long, aes(x=Trust, y=Reliance, color=ConfidenceQuantile, group=Confi
 #   group_by(Condition, Block, Participant) %>% 
 #   summarise(meanRT = mean(RT), sdRT = sd(RT))
 
+data_long$Reliability_Factor <- as.factor(data_long$Reliability)
+flexplot(data = data_long, Reliance ~ Trust + Reliability_Factor| Condition + Confidence, method = "lm")
 
