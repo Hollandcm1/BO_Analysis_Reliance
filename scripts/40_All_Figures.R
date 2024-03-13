@@ -181,3 +181,13 @@ flexplot(Performance_Before ~ Participant | Condition, data=data_all_conditions_
 # Block by Performance_After by Condition
 flexplot(Performance_After ~ Block + Condition, data=data_all_conditions_long, method='lm', se=TRUE)
 
+# Reliability by Performance_After by Condition
+flexplot(Performance_After ~ Reliability + Condition, data=data_all_conditions_long, method='lm', se=TRUE)
+
+# Performance_After by Participant by Condition
+flexplot(Performance_After ~ Participant | Condition, data=data_all_conditions_long)
+
+
+
+
+

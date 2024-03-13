@@ -7,3 +7,4 @@ units <- 'in'
 dpi <- 300
 colour.increasing = "blue"
 colour.decreasing = "red"
+title_size <- 12

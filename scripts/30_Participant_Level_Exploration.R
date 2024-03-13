@@ -15,6 +15,8 @@ flexplot(Performance_Before ~ Block, data=data_all_conditions_long)
 flexplot(Performance_Before ~ Block + Condition, data=data_all_conditions_long)
 flexplot(Performance_Before ~ Block + Condition | Trust, data=data_all_conditions_long, method='lm')
 
+flexplot(Reliance ~ Performance_Before, data=data_all_conditions_long) # must be adding jitter?
+hist(data_all_conditions_long$Performance_Before)
 
 # Multiple Vars
 ggplot(data_all_conditions_long, aes(x=Confidence, y=Trust, color=Participant, group=Participant)) + 
@@ -60,3 +62,16 @@ ggplot(data_all_conditions_long, aes(x=Block, y=Performance_Before, color=Partic
   theme_classic() +
   theme(legend.position = "none") +
   facet_wrap(.~Condition)
+
+
+ggplot(data_all_conditions_long, aes(x=Performance_Before, y=Reliance, group=Condition, colour=Condition)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Reliance by Performance", x = "Performance Before", y = "Reliance") +
+  theme_classic()
+
+ggplot(data_all_conditions_long, aes(x=Performance_After, y=Reliance, group=Condition, colour=Condition)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(title = "Reliance by Performance", x = "Performance After", y = "Reliance") +
+  theme_classic() 

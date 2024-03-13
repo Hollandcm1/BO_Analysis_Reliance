@@ -8,7 +8,7 @@ data_long <- load_processed_data_long()
 model <- aov(data = data_long, Performance_Before ~ Condition * Block + Error(Participant / Block))
 model_summary <- summary(model)
 capture.output(model_summary, file = here('output','tables','05_Performance_Before_Simple_Anova.txt'))
-tab_model(model)
+tab_model(model) # No Sig. Effects
 
 # Figure Parameters
 source(here('scripts', 'Figure_Parameters.R'))
@@ -21,7 +21,8 @@ g1 <- ggplot(data_long, aes(x=Block, y=Performance_Before, color=Condition, grou
   labs(title = "Performance Before by Block by Condition", x = "Block", y = "Performance Before") +
   scale_x_continuous(breaks = seq(1, 6, 1)) +
   scale_color_manual(values = c("Decreasing" = colour.decreasing, "Increasing" = colour.increasing))+
-  ylim(0, 1)
+  ylim(0, 1) +
+  theme(plot.title = element_text(size=title_size))
 print(g1)
 ggsave(here('output','figures','05_Performance_Before_by_Block_by_Condition.png'), 
        plot = g1, device = device, width = width, height = height, units = units, dpi = dpi)
@@ -48,7 +49,8 @@ g2 <- ggplot(summary_data, aes(x = Block, y = Average_Performance_Before, group 
   ylim(0, 1) + 
   scale_x_continuous(breaks = seq(1, 6, 1)) +
   geom_point(data = data_long, aes(x = Block, y = Performance_Before, color = Condition), 
-               position = position_jitterdodge(jitter.width = 0.2, dodge.width = dodge_width), alpha = 0.5)
+               position = position_jitterdodge(jitter.width = 0.2, dodge.width = dodge_width), alpha = 0.5) +
+  theme(plot.title = element_text(size=title_size))
 print(g2)
 ggsave(here('output','figures','05_Performance_Before_by_Block_by_Condition_with_SE.png'), 
        plot = g2, device = device, width = width, height = height, units = units, dpi = dpi)
@@ -70,7 +72,8 @@ g3 <- ggplot(summary_data, aes(x = Block, y = Average_Performance_Before, group 
   ylim(0, 1) + 
   scale_x_continuous(breaks = seq(1, 6, 1)) +
   geom_point(data = data_long, aes(x = Block, y = Performance_Before, color = Condition), 
-               position = position_jitterdodge(jitter.width = 0.2, dodge.width = dodge_width), alpha = 0.5)
+               position = position_jitterdodge(jitter.width = 0.2, dodge.width = dodge_width), alpha = 0.5) +
+  theme(plot.title = element_text(size=title_size))
 print(g3)
 ggsave(here('output','figures','05_Performance_Before_by_Block_by_Condition_with_SE_as_Ribbon.png'), 
        plot = g3, device = device, width = width, height = height, units = units, dpi = dpi)

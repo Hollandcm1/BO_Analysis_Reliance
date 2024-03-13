@@ -174,7 +174,13 @@ flexplot(Reliance~Trust + Confidence, data = data_long, method = "lm")
 
 
 
+plot_ly(data = data_long[data_long$Condition == "50% Increasing", ] , x = ~Trust, y = ~Confidence, z = ~Reliance,
+        type = 'scatter3d', mode = 'markers',
+        color = ~Reliability)
 
 
+plot_ly(data = data_long, x = ~Trust, y = ~Confidence, z = ~Reliance,
+        type = 'scatter3d', mode = 'markers',
+        color = ~Reliability)
 
 

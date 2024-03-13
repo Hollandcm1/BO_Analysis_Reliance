@@ -1,4 +1,5 @@
 # Load Data
+
 file_name <- 'Reliance_Data.csv'
 file_path <- here('data', 'raw', file_name) # construct the path to the file
 data <- read.csv(file_path, header = TRUE)

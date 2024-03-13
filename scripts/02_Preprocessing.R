@@ -1,6 +1,5 @@
 # Preprocessing
 
-
 # Remove uneeded data
 data <- filter(data, condition <= 2) # condition 1 and 2 are 50% decreasing
 data <- as.data.frame(data)
@@ -38,30 +37,38 @@ tmp <- data %>%
                names_to = "Block", # put in Block column
                values_to = "Trust") # values to Trust column
 data_long$Trust <- tmp$Trust # add Trust to data_long
+
 tmp <- data %>%
   select(-Participant) %>% # remove unneeded columns
   pivot_longer(cols =  matches("^p\\d+_before$"), # find a p1_before:p6_before
                names_to = "Block", # put in Block column
                values_to = "Performance_Before") # values to Performance column
 data_long$Performance_Before <- tmp$Performance_Before # add Performance_Before to data_long
+
 tmp <- data %>%
   select(-Participant) %>% # remove unneeded columns
   pivot_longer(cols =  matches("^p\\d+_after$"), # find a p1_after:p6_after
                names_to = "Block", # put in Block column
                values_to = "Performance_After") # values to Performance column
 data_long$Performance_After <- tmp$Performance_After # add Performance_After to data_long
+
 tmp <- data %>%
   select(-Condition) %>% # remove unneeded columns
   pivot_longer(cols = starts_with('c'), # find a c1:c6
                names_to = "Block", # put in Block column
                values_to = "Confidence") # values to Confidence column)
 data_long$Confidence <- tmp$Confidence # add Confidence to data_long
+
 tmp <- data %>%
   pivot_longer(cols = starts_with('a'),
                names_to = "Block",
                values_to = "Reliability")
 data_long$Reliability <- tmp$Reliability
+
+# cleanup
 rm(tmp)
+
+# renaming
 data_long <- data_long %>% # replace r1:r6 with just numbers
   mutate(Block = case_when(
     Block == "r1" ~ '1', 
@@ -72,16 +79,14 @@ data_long <- data_long %>% # replace r1:r6 with just numbers
     Block == "r6" ~ '6', 
     TRUE ~ as.character(Condition)  # Handles any other unforeseen values gracefully
   ))
-data_long$Block <- as.numeric(data_long$Block)
-data_long$Performance_Before <- data_long$Performance_Before / 50
-data_long$Performance_After <- data_long$Performance_After / 50
+
+# Data Formatting
+data_long$Block <- as.numeric(data_long$Block) # later scripts will have to create their out factors
+data_long$Performance_Before <- data_long$Performance_Before / 50 #puts it on 0 to 1 scale
+data_long$Performance_After <- data_long$Performance_After / 50 #puts it on 0 to 1 scale
 
 # Calculate Performance Difference
 data_long$Performance_Difference <- data_long$Performance_After - data_long$Performance_Before
-
-# New data
-# str(data)
-# str(data_long)
 
 # Store processed data
 write.csv(data, here('data', 'processed', 'processed_data.csv'), row.names = FALSE)
