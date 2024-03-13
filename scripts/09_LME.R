@@ -193,6 +193,7 @@ g7_2 <- ggplot(data_long, aes(x = Trust, y = Reliance, color = as.factor(Reliabi
   facet_wrap(.~Condition)
 print(g7_2)
 
+
 data_long <- data_long %>%
   mutate(ConfidenceQuantile = ntile(Confidence, 3))
 data_long$ConfidenceQuantile <- as.factor(data_long$ConfidenceQuantile)
@@ -215,6 +216,53 @@ g7_3 <- ggplot(data_long, aes(x = Trust, y = Reliance, color = Reliability_Facto
   facet_wrap(~interaction(Condition, ConfidenceQuantile), ncol = 2) 
 print(g7_3)
 
+g7_4 <- ggplot(data_long, aes(x=Trust, y=Reliance, color=ConfidenceQuantile, group=ConfidenceQuantile)) +
+  geom_smooth(alpha = 0.25, method = 'lm') +
+  geom_point(alpha = 0.5) +
+  #geom_jitter(width = 0.2, height = 0, alpha = 0.5) +
+  theme_classic() +
+  labs(title = "Dependance by Trust by Self-Confidence", x = "Trust", y = "Dependance") +
+  facet_wrap(.~Condition) +
+  ylim(0, 1) +
+  scale_color_discrete(name = "Self-Confidence Binned",
+                       labels = c("Low", "Medium", "High"))
+print(g7_4)
+
+g7_5 <-ggplot(data_long, aes(x=Confidence, y=Reliance, group=Condition, colour=Condition)) +
+  geom_smooth(alpha = 0.25, method = 'lm') +
+  geom_point(alpha = 0.5) +
+  #geom_jitter(width = 0.2, height = 0, alpha = 0.5) +
+  theme_classic() +
+  labs(title = "Dependance by Trust by Self-Confidence", x = "Confidence", y = "Dependance") +
+  ylim(0, 1) +
+  scale_color_discrete(name = "Self-Confidence Binned",
+                       labels = c("Low", "Medium", "High"))
+print(g7_5)
+
+
+g7_6 <-ggplot(data_long, aes(x=Confidence, y=Reliance, group=ConfidenceQuantile, colour=ConfidenceQuantile)) +
+  geom_smooth(alpha = 0.25, method = 'lm') +
+  geom_point(alpha = 0.5) +
+  #geom_jitter(width = 0.2, height = 0, alpha = 0.5) +
+  theme_classic() +
+  labs(title = "Dependance by Trust by Self-Confidence", x = "Confidence", y = "Dependance") +
+  ylim(0, 1) +
+  scale_color_discrete(name = "Self-Confidence Binned",
+                       labels = c("Low", "Medium", "High")) +
+  facet_wrap(.~Condition)
+print(g7_6)
+
+g7_7 <-ggplot(data_long, aes(x=Confidence, y=Reliance)) +
+  geom_smooth(alpha = 0.25) +
+  geom_point(alpha = 0.5) +
+  #geom_jitter(width = 0.2, height = 0, alpha = 0.5) +
+  theme_classic() +
+  labs(title = "Dependance by Trust by Self-Confidence", x = "Confidence", y = "Dependance") +
+  ylim(0, 1) +
+  scale_color_discrete(name = "Self-Confidence Binned",
+                       labels = c("Low", "Medium", "High")) +
+  facet_wrap(.~Condition)
+print(g7_7)
 
 
 g8 <- ggplot(data_long, aes(x = Trust, y = Reliance, color = as.factor(Reliability), group = Reliability)) +
@@ -286,3 +334,13 @@ ggsave(here('output','figures', '09_Reliance_by_Trust_by_Self-Confidence_Binned_
 data_long$Reliability_Factor <- as.factor(data_long$Reliability)
 flexplot(data = data_long, Reliance ~ Trust + Reliability_Factor| Condition + Confidence, method = "lm")
 
+
+
+data_long <- data_long %>%
+  mutate(ConfidenceQuantile = ntile(Confidence, 3))
+data_long$ConfidenceQuantile <- as.factor(data_long$ConfidenceQuantile)
+flexplot(data = data_long, Reliance~ Trust + ConfidenceQuantile, method = "lm")
+
+
+flexplot(data=data_long, Trust ~ Confidence + Reliability_Factor | Condition, method="lm")
+flexplot(data=data_long, Trust ~ Reliability_Factor + ConfidenceQuantile | Condition, method='lm')
