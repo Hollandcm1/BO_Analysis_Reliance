@@ -200,9 +200,9 @@ data_long$ConfidenceQuantile <- as.factor(data_long$ConfidenceQuantile)
 #rename ConfidenceQuartile as low, medium, and high
 data_long <- data_long %>%
   mutate(ConfidenceQuantile = case_when(
-    ConfidenceQuantile == 1 ~ "High Confidence",
+    ConfidenceQuantile == 3 ~ "High Confidence",
     ConfidenceQuantile == 2 ~ "Medium Confidence",
-    ConfidenceQuantile == 3 ~ "Low Confidence",
+    ConfidenceQuantile == 1 ~ "Low Confidence",
     TRUE ~ as.factor(ConfidenceQuantile) # This line is optional, to handle unexpected values
   ))
 g7_3 <- ggplot(data_long, aes(x = Trust, y = Reliance, color = Reliability_Factor, group = Reliability_Factor)) +
@@ -223,9 +223,9 @@ g7_4 <- ggplot(data_long, aes(x=Trust, y=Reliance, color=ConfidenceQuantile, gro
   theme_classic() +
   labs(title = "Dependance by Trust by Self-Confidence", x = "Trust", y = "Dependance") +
   facet_wrap(.~Condition) +
-  ylim(0, 1) +
-  scale_color_discrete(name = "Self-Confidence Binned",
-                       labels = c("Low", "Medium", "High"))
+  ylim(0, 1) #+
+  #scale_color_discrete(name = "Self-Confidence Binned",
+                       #labels = c("Low", "Medium", "High"))
 print(g7_4)
 
 g7_5 <-ggplot(data_long, aes(x=Confidence, y=Reliance, group=Condition, colour=Condition)) +
