@@ -1,5 +1,14 @@
 # Preprocessing
 
+# Load data
+source(here('scripts', '01_Load_Data.R'))
+
+# load libraries if not already loaded
+if (!any(grepl("here", search()))) {
+  source(here('scripts', '00_Setup.R'))
+}
+
+
 # Remove uneeded data
 data <- filter(data, condition <= 2) # condition 1 and 2 are 50% decreasing
 data <- as.data.frame(data)
@@ -87,6 +96,9 @@ data_long$Performance_After <- data_long$Performance_After / 50 #puts it on 0 to
 
 # Calculate Performance Difference
 data_long$Performance_Difference <- data_long$Performance_After - data_long$Performance_Before
+
+# Adding another factor that can be used later
+data_long$Reliance_100 <- data_long$Reliance * 100
 
 # Store processed data
 write.csv(data, here('data', 'processed', 'processed_data.csv'), row.names = FALSE)
