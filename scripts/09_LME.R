@@ -7,9 +7,28 @@ data_long <- load_processed_data_long()
 # Figure Parameters
 source(here('scripts', 'Figure_Parameters.R'))
 
+#########################
+### Data manipulation ###
+#########################
+# Create Confidence Quantiles
+data_long <- data_long %>%
+  mutate(ConfidenceQuantile = ntile(Confidence, 3))
+data_long$ConfidenceQuantile <- as.factor(data_long$ConfidenceQuantile)
+# rename ConfidenceQuartile as low, medium, and high
+data_long <- data_long %>%
+  mutate(ConfidenceQuantile = case_when(
+    ConfidenceQuantile == 3 ~ "High Confidence",
+    ConfidenceQuantile == 2 ~ "Medium Confidence",
+    ConfidenceQuantile == 1 ~ "Low Confidence",
+    TRUE ~ as.factor(ConfidenceQuantile) # This line is optional, to handle unexpected values
+  ))
 
-# Models
+# Reliability as a factor
+data_long$Reliability_Factor <- as.factor(data_long$Reliability)
 
+##############
+### Models ###
+##############
 model_1 <- lmer(data = data_long, Trust ~ Condition * Block * Confidence + (1 | Participant))
 summary(model_1)
 tab_model(model_1)
@@ -39,9 +58,11 @@ summary(model_7)
 tab_model(model_7)
 
 # Best 
+########################################################################################
 model_8 <- lmer(data = data_long, Reliance ~ Condition * Reliability * Confidence * Trust + (1 | Participant))
 summary(model_8)
 tab_model(model_8)
+########################################################################################
 
 model_9 <- lmer(data = data_long, Reliance_100 ~ Condition * Reliability * Confidence * Trust + (1 + Condition | Participant))
 summary(model_9)
@@ -54,12 +75,14 @@ tab_model(model_10)
 model_11 <- lmer(data = data_long, Reliance_100 ~ Reliability * Confidence * Trust + (1 + Participant | Condition))
 summary(model_11)
 tab_model(model_11)
+# In theory, model 11 should be a better model, but for some reason it never 
+# seems to converge. Unsure why.
 
 
+######################
+### Visualize Data ###
+######################
 
-
-
-# Visualize Data
 # Trust by Confidence
 g1 <- ggplot(data_long, aes(x=Confidence, y=Trust, color=Condition, group=Condition)) + 
   geom_smooth(alpha = 0.25) + 
@@ -105,12 +128,12 @@ g4 <- ggplot(data_long, aes(x = Trust, y = Reliance, color = as.factor(Reliabili
   theme(axis.line=element_line()) +
   labs(title = "Trust as a function of self-confidence",
        x = "Trust",
-       y = "Reliance",
+       y = "Dependence",
        color = "Reliability") +
   ylim(0, 1) +
   xlim(0, 100)
 print(g4)
-ggsave(here('output','figures','09_Trust_by_Reliance_by_Condition.png'), 
+ggsave(here('output','figures','09_Trust_by_Dependence_by_Condition.png'), 
        plot = g4, device = device, width = width, height = height, units = units, dpi = dpi)
 
 g5 <- ggplot(data_long, aes(x = Confidence, y = Trust, color = as.factor(Reliability), group = as.factor(Reliability))) +
@@ -136,9 +159,9 @@ g6 <- ggplot(data_long, aes(x = Confidence, y = Reliance, color = as.factor(Reli
   facet_wrap(.~Condition, scales='free') + 
   theme_classic() +
   theme(axis.line=element_line()) +
-  labs(title = "Reliance as a function of self-confidence",
+  labs(title = "Dependence as a function of self-confidence",
        x = "Confidence",
-       y = "Reliance",
+       y = "Dependence",
        color = "Reliability") +
   ylim(0, 1) +
   xlim(0, 100)
@@ -147,62 +170,62 @@ ggsave(here('output','figures','09_Reliance_by_Confidence_by_Reliability_by_Cond
        plot = g6, device = device, width = width, height = height, units = units, dpi = dpi)
 
 
+##########################
+### Simplified Buildup ###
+##########################
+
 g7 <- ggplot(data_long, aes(x = Trust, y = Reliance)) +
   geom_jitter(size = 0.5, alpha = 0.3) + 
   geom_smooth(method = 'lm', alpha = 0.2) + 
   facet_wrap(.~Condition, scales='free') + 
   theme_classic() +
   theme(axis.line=element_line()) +
-  labs(title = "Dependance as a function of Trust",
+  labs(title = "Dependence as a function of Trust Seperated by Condition",
        x = "Trust",
-       y = "Dependance") +
+       y = "Dependence") +
   ylim(0, 1) +
   xlim(0, 100)
 print(g7)
+ggsave(here('output','figures','09_Dependence_by_Trust_Seperated_by_Condition.png'), 
+       plot = g7, device = device, width = width, height = height, units = units, dpi = dpi)
 
 g7_0 <- ggplot(data_long, aes(x = Trust, y = Reliance)) +
   geom_jitter(size = 0.5, alpha = 0.3) + 
   geom_smooth(method = 'lm', alpha = 0.2) + 
   theme_classic() +
   theme(axis.line=element_line()) +
-  labs(title = "Dependance as a function of Trust",
+  labs(title = "Dependence as a function of Trust",
        x = "Trust",
-       y = "Dependance")
+       y = "Dependence")
 print(g7_0)
+ggsave(here('output','figures','09_Dependence_by_Trust_with_Collapsed_Conditions.png'), 
+       plot = g7_0, device = device, width = width, height = height, units = units, dpi = dpi)
 
 g7_1 <- ggplot(data_long, aes(x = Trust, y = Reliance, color = Condition, group = Condition)) +
   geom_jitter(size = 0.5, alpha = 0.3) + 
   geom_smooth(method = 'lm', alpha = 0.2) + 
   theme_classic() +
   theme(axis.line=element_line()) +
-  labs(title = "Dependance as a function of Trust and Condition",
+  labs(title = "Dependence as a function of Trust and Condition",
        x = "Trust",
-       y = "Dependance") 
+       y = "Dependence") 
 print(g7_1)
+ggsave(here('output','figures','09_Dependence_by_Trust_by_Condition_Same_Figure.png'), 
+       plot = g7_1, device = device, width = width, height = height, units = units, dpi = dpi)
 
 g7_2 <- ggplot(data_long, aes(x = Trust, y = Reliance, color = as.factor(Reliability), group = as.factor(Reliability))) +
   geom_jitter(size = 0.5, alpha = 0.3) + 
   geom_smooth(method = 'lm', alpha = 0.2) + 
   theme_classic() +
   theme(axis.line=element_line()) +
-  labs(title = "Dependance as a function of Trust and Reliability",
+  labs(title = "Dependence as a function of Trust and Reliability",
        x = "Trust",
-       y = "Dependance") +
+       y = "Dependence") +
   facet_wrap(.~Condition)
 print(g7_2)
+ggsave(here('output','figures','09_Dependence_by_Trust_by_Reliability_Seperated_by_Condition.png'), 
+       plot = g7_2, device = device, width = width, height = height, units = units, dpi = dpi)
 
-
-data_long <- data_long %>%
-  mutate(ConfidenceQuantile = ntile(Confidence, 3))
-data_long$ConfidenceQuantile <- as.factor(data_long$ConfidenceQuantile)
-#rename ConfidenceQuartile as low, medium, and high
-data_long <- data_long %>%
-  mutate(ConfidenceQuantile = case_when(
-    ConfidenceQuantile == 3 ~ "High Confidence",
-    ConfidenceQuantile == 2 ~ "Medium Confidence",
-    ConfidenceQuantile == 1 ~ "Low Confidence",
-    TRUE ~ as.factor(ConfidenceQuantile) # This line is optional, to handle unexpected values
-  ))
 g7_3 <- ggplot(data_long, aes(x = Trust, y = Reliance, color = Reliability_Factor, group = Reliability_Factor)) +
   geom_jitter(size = 0.5, alpha = 0.3) + 
   geom_smooth(method = 'lm', alpha = 0.2) + 
@@ -210,78 +233,82 @@ g7_3 <- ggplot(data_long, aes(x = Trust, y = Reliance, color = Reliability_Facto
   theme(axis.line=element_line()) +
   labs(title = "",
        x = "Trust",
-       y = "Dependance") +
+       y = "Dependence") +
   facet_wrap(~interaction(Condition, ConfidenceQuantile), ncol = 2) 
 print(g7_3)
+ggsave(here('output','figures','09_Dependence_by_Trust_by_Reliability_by_Condition_by_Confidence.png'), 
+       plot = g7_3, device = device, width = width, height = height, units = units, dpi = dpi)
 
 g7_4 <- ggplot(data_long, aes(x=Trust, y=Reliance, color=ConfidenceQuantile, group=ConfidenceQuantile)) +
   geom_smooth(alpha = 0.25, method = 'lm') +
   geom_point(alpha = 0.5) +
   #geom_jitter(width = 0.2, height = 0, alpha = 0.5) +
   theme_classic() +
-  labs(title = "Dependance by Trust by Self-Confidence", x = "Trust", y = "Dependance") +
+  labs(title = "Dependence by Trust by Self-Confidence Binned", x = "Trust", y = "Dependence") +
   facet_wrap(.~Condition) +
   ylim(0, 1) #+
   #scale_color_discrete(name = "Self-Confidence Binned",
                        #labels = c("Low", "Medium", "High"))
 print(g7_4)
+ggsave(here('output','figures','09_Dependence_by_Trust_by_Self-Confidence_Binned_by_Condition.png'), 
+       plot = g7_4, device = device, width = width, height = height, units = units, dpi = dpi)
 
 g7_5 <-ggplot(data_long, aes(x=Confidence, y=Reliance, group=Condition, colour=Condition)) +
   geom_smooth(alpha = 0.25, method = 'lm') +
   geom_point(alpha = 0.5) +
   #geom_jitter(width = 0.2, height = 0, alpha = 0.5) +
   theme_classic() +
-  labs(title = "Dependance by Trust by Self-Confidence", x = "Confidence", y = "Dependance") +
+  labs(title = "Dependence by Self-Confidence", x = "Confidence", y = "Dependence") +
   ylim(0, 1) +
-  scale_color_discrete(name = "Self-Confidence Binned",
+  scale_color_discrete(name = "Condition",
                        labels = c("Low", "Medium", "High"))
 print(g7_5)
-
+ggsave(here('output','figures','09_Dependence_by_Self-Confidence_by_Condition_same_figure.png'), 
+       plot = g7_5, device = device, width = width, height = height, units = units, dpi = dpi)
 
 g7_6 <-ggplot(data_long, aes(x=Confidence, y=Reliance, group=ConfidenceQuantile, colour=ConfidenceQuantile)) +
   geom_smooth(alpha = 0.25, method = 'lm') +
   geom_point(alpha = 0.5) +
   #geom_jitter(width = 0.2, height = 0, alpha = 0.5) +
   theme_classic() +
-  labs(title = "Dependance by Trust by Self-Confidence", x = "Confidence", y = "Dependance") +
+  labs(title = "Dependence by Self-Confidence", x = "Confidence", y = "Dependence") +
   ylim(0, 1) +
   scale_color_discrete(name = "Self-Confidence Binned",
                        labels = c("Low", "Medium", "High")) +
   facet_wrap(.~Condition)
 print(g7_6)
+ggsave(here('output','figures','09_Dependence_by_Self-Confidence_Binned_by_Condition_v2.png'), 
+       plot = g7_6, device = device, width = width, height = height, units = units, dpi = dpi)
 
 g7_7 <-ggplot(data_long, aes(x=Confidence, y=Reliance)) +
   geom_smooth(alpha = 0.25) +
   geom_point(alpha = 0.5) +
   #geom_jitter(width = 0.2, height = 0, alpha = 0.5) +
   theme_classic() +
-  labs(title = "Dependance by Trust by Self-Confidence", x = "Confidence", y = "Dependance") +
+  labs(title = "Dependence by Self-Confidence", x = "Confidence", y = "Dependence") +
   ylim(0, 1) +
-  scale_color_discrete(name = "Self-Confidence Binned",
-                       labels = c("Low", "Medium", "High")) +
+  # scale_color_discrete(name = "",
+  #                      labels = c("Low", "Medium", "High")) +
   facet_wrap(.~Condition)
 print(g7_7)
+ggsave(here('output','figures','09_Dependence_by_Self-Confidence_by_Condition_v3.png'), 
+       plot = g7_7, device = device, width = width, height = height, units = units, dpi = dpi)
 
 
-g8 <- ggplot(data_long, aes(x = Trust, y = Reliance, color = as.factor(Reliability), group = Reliability)) +
-  geom_jitter(size = 0.5, alpha = 0.3) + 
-  geom_smooth(method = 'lm', alpha = 0.2) + 
-  facet_wrap(.~Condition, scales='free') + 
-  theme_classic() +
-  theme(axis.line=element_line()) +
-  labs(title = "Dependance as a function of Trust and Reliability",
-       x = "Trust",
-       y = "Dependance") +
-  ylim(0, 1) +
-  xlim(0, 100)
-print(g8)
 
 
-ggplot(data_long, aes(x=Trust, y=Reliance, color=Confidence, group=Confidence)) + 
+
+
+
+
+
+
+
+ggplot(data_long, aes(x=Trust, y=Reliance, color=Confidence, group=ConfidenceQuantile)) + 
   geom_smooth(alpha = 0.25, method = 'lm') + 
   geom_jitter(width = 0.2, height = 0, alpha = 0.5) +
   theme_classic() +
-  labs(title = "Dependance by Trust by Self-Confidence", x = "Trust", y = "Dependance") +
+  labs(title = "Dependence by Trust by Self-Confidence", x = "Trust", y = "Dependence") +
   ylim(0, 1) + 
   xlim(0, 100)
 
@@ -295,52 +322,27 @@ ggplot(data_long, aes(x=Trust, y=Reliance, color=Confidence_binned, group=Confid
   geom_smooth(alpha = 0.25, method = 'lm') + 
   geom_jitter(width = 0.2, height = 0, alpha = 0.5) +
   theme_classic() +
-  labs(title = "Dependance by Trust by Self-Confidence", x = "Trust", y = "Dependance") +
+  labs(title = "Dependence by Trust by Self-Confidence", x = "Trust", y = "Dependence") +
   facet_wrap(.~Condition)
 
 data_long <- data_long %>%
   mutate(ConfidenceQuantile = ntile(Confidence, 3))
 
 
+################################
+### Other Exploritoy Figures ###
+################################
 
-
-data_long$ConfidenceQuantile <- as.factor(data_long$ConfidenceQuantile)
-g9 <- ggplot(data_long, aes(x=Trust, y=Reliance, color=ConfidenceQuantile, group=ConfidenceQuantile)) +
-  geom_smooth(alpha = 0.25, method = 'lm') +
-  geom_point(alpha = 0.5) +
-  #geom_jitter(width = 0.2, height = 0, alpha = 0.5) +
-  theme_classic() +
-  labs(title = "Dependance by Trust by Self-Confidence", x = "Trust", y = "Dependance") +
-  facet_wrap(.~Condition) +
-  ylim(0, 1) +
-  scale_color_discrete(name = "Self-Confidence Binned",
-                       labels = c("Low", "Medium", "High"))
-print(g9)
-ggsave(here('output','figures', '09_Reliance_by_Trust_by_Self-Confidence_Binned_by_Condition.png'), 
-       plot = g9, device = device, width = width, height = height, units = units, dpi = dpi)
-
-# dt[, 
-#    list(meanRT=mean(RT), sdRT=sd(RT)), 
-#    by=.(Condition, Block, Participant)
-#    ][, list(meanRT=mean(meanRT), sdRT=mean(sdRT)), 
-#       by=.(Condition, Block)]
-# 
-# dt %>% 
-#   group_by(Condition, Block, Participant) %>% 
-#   summarise(meanRT = mean(RT), sdRT = sd(RT))
-
-data_long$Reliability_Factor <- as.factor(data_long$Reliability)
 flexplot(data = data_long, Reliance ~ Trust + Reliability_Factor| Condition + Confidence, method = "lm")
 
-
-
+# changing the bin size
 data_long <- data_long %>%
   mutate(ConfidenceQuantile = ntile(Confidence, 3))
 data_long$ConfidenceQuantile <- as.factor(data_long$ConfidenceQuantile)
 flexplot(data = data_long, Reliance~ Trust + ConfidenceQuantile, method = "lm")
 
-
 flexplot(data=data_long, Trust ~ Confidence + Reliability_Factor | Condition, method="lm")
+
 flexplot(data=data_long, Trust ~ Reliability_Factor + ConfidenceQuantile | Condition, method='lm')
 
 
