@@ -1,5 +1,6 @@
 # GG corrections
 
+# Extra Libraries
 library(ez)
 library(afex)
 library(sjstats)
@@ -9,9 +10,17 @@ data <- load_processed_data()
 data_long <- load_processed_data_long()
 
 #data_long$Block <- as.numeric(data_long$Block)
-data_long$Block <- as.factor(data_long$Block)
+data_long$Block <- as.factor(data_long$Block) # It might just be worth making 
+# this into it's own factor variable
 
-numver_of_tests <- 6 # for bonferroni correction
+# Bonferroni Correction
+numver_of_tests <- 5 
+# this was originall going to be used to do corrections here, but the easier 
+# method is to just ajust your alpha that you are comparing to instead 
+# of trying to calculate corrections everyone in these anovas
+print(paste("New Alpha based on Bonferroni Correction: ", 0.05/numver_of_tests))
+# Note that the bonferroni correction is 5 despite having 6 tests as we 
+# are not including performance_difference in the correction
 
 #############
 ### Trust ###
@@ -88,16 +97,12 @@ effect_sizes <- effectsize::eta_squared(results, partial = TRUE, ci.lvl = NA)  #
 print(effect_sizes)
 capture.output(effect_sizes, file = here('output','tables','12_Performance_After_Effect_Sizes.txt'))
 
-
-# Performance_Difference
-# results <- ezANOVA(data = data_long, 
-#                    dv = Performance_Difference, 
-#                    wid = Participant, 
-#                    within = .(Block),
-#                    between = .(Condition),
-#                    detailed = TRUE,
-#                    type = 3)
-# print(results)
+##############################
+### Performance_Difference ###
+##############################
+# This isn't really a usful ANOVA, as anything captured here really should be 
+# captured somewhere in the performance_before and performance_after variables. 
+# There could be an interaction, but that's what the LME is for.
 results <- aov_ez(id = "Participant", 
                   dv = "Performance_Difference", 
                   data = data_long, 
@@ -112,7 +117,6 @@ capture.output(results, file = here('output','tables','12_Performance_Difference
 effect_sizes <- effectsize::eta_squared(results, partial = TRUE, ci.lvl = NA)  # Set ci.lvl=NA to exclude confidence intervals for faster computation
 print(effect_sizes)
 capture.output(effect_sizes, file = here('output','tables','12_Performance_Difference_Effect_Sizes.txt'))
-
 
 ##################
 ### Confidence ###

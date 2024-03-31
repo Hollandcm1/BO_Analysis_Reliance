@@ -1,5 +1,10 @@
 # Normality Checks
 
+# Load data
+source(here('scripts', 'Other_Functions.R'))
+data <- load_processed_data()
+data_long <- load_processed_data_long()
+
 # Shapiro-Wilk Test
 shapiro.test(data_long$Trust) # Not Normally Distributed
 shapiro.test(data_long$Confidence) # Not Normally Distributed
