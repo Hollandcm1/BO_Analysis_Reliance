@@ -26,8 +26,8 @@ summary_data <- data_long %>% # calculate trust
 
 dodge_width <- 0.2
 ggplot(summary_data, aes(x=Block, y=Average_Trust, color=Condition)) +
-  #geom_point(position = position_dodge(width = dodge_width)) +
-  geom_errorbar(aes(ymin=Average_Trust-se, ymax=Average_Trust+se), width=0.5, position = position_dodge(width = dodge_width)) +
+  geom_point(position = position_dodge(width = dodge_width)) +
+  #geom_errorbar(aes(ymin=Average_Trust-se, ymax=Average_Trust+se), width=0.5, position = position_dodge(width = dodge_width)) +
   #geom_line() +
   geom_smooth(method='lm', alpha=0.2) +
   theme_classic() +
@@ -42,6 +42,63 @@ ggplot(data_long, aes(x=Block, y=Reliance, color=Condition)) +
   #theme(legend.position = "none") +
   labs(x="Trial Progression", y="Reliance") +
   scale_x_continuous(breaks = 1:6, labels=c("0", "50", "100", "150", "200", "250")) +
+  theme(axis.text.x = element_text(size = 12), # Increase x-axis label font size
+        axis.text.y = element_text(size = 12),
+        axis.title.x = element_text(size = 12), # Increase x-axis title font size
+        axis.title.y = element_text(size = 12)) # Increase y-axis label font size if needed
+
+ggplot(data_long, aes(x=Reliance, y=Performance_After, color=Condition)) +
+  #geom_jitter(alpha=0.4, height=0.01, width=0.01) +
+  geom_point(alpha=0.4) +
+  geom_smooth(method="lm", se=FALSE, alpha = 0.2) +
+  theme_classic() +
+  #theme(legend.position = "none") +
+  labs(x="Dependance", y="Overall Performance") +
+  theme(axis.text.x = element_text(size = 12), # Increase x-axis label font size
+        axis.text.y = element_text(size = 12),
+        axis.title.x = element_text(size = 12), # Increase x-axis title font size
+        axis.title.y = element_text(size = 12)) # Increase y-axis label font size if needed
+
+data_long$Reliability
+flexplot(data_long, Reliance ~ Reliability + Condition, method='lm')
+
+
+ggplot(data_long, aes(x=Reliability, y=Reliance, color=Condition)) +
+  geom_jitter(alpha=0.4, height=0.01, width=1.5) +
+  #geom_point(alpha=0.4) +
+  geom_smooth(method="lm", se=FALSE, alpha = 0.2) +
+  theme_classic() +
+  facet_wrap(~Condition) +
+  #theme(legend.position = "none") +
+  labs(x="Reliability", y="Dependance") +
+  theme(axis.text.x = element_text(size = 12), # Increase x-axis label font size
+        axis.text.y = element_text(size = 12),
+        axis.title.x = element_text(size = 12), # Increase x-axis title font size
+        axis.title.y = element_text(size = 12)) # Increase y-axis label font size if needed
+
+
+ggplot(data_long, aes(x=Reliability, y=Reliance, color=Condition)) +
+  geom_jitter(alpha=0.4, height=0.01, width=1.5) +
+  #geom_point(alpha=0.4) +
+  geom_smooth(method="lm", se=FALSE, alpha = 0.2) +
+  theme_classic() +
+  #facet_wrap(~Condition) +
+  #theme(legend.position = "none") +
+  labs(x="Reliability of Automation (%)", y="Dependance") +
+  theme(axis.text.x = element_text(size = 12), # Increase x-axis label font size
+        axis.text.y = element_text(size = 12),
+        axis.title.x = element_text(size = 12), # Increase x-axis title font size
+        axis.title.y = element_text(size = 12)) # I
+
+
+ggplot(data_long, aes(x=Trust, y=Reliance, color=Condition)) +
+  geom_jitter(alpha=0.4, height=0.01, width=1.5) +
+  #geom_point(alpha=0.4) +
+  geom_smooth(method="lm", se=FALSE, alpha = 0.2) +
+  theme_classic() +
+  #facet_wrap(~Condition) +
+  #theme(legend.position = "none") +
+  labs(x="Trust in Automation", y="Reliance") +
   theme(axis.text.x = element_text(size = 12), # Increase x-axis label font size
         axis.text.y = element_text(size = 12),
         axis.title.x = element_text(size = 12), # Increase x-axis title font size

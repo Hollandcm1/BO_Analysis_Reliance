@@ -36,7 +36,7 @@ summary_data <- data_long %>% # calculate trust
 dodge_width <- 0.2 # seperation between conditions
 g2 <- ggplot(summary_data, aes(x = Block, y = Average_Trust, group = Condition, color = Condition)) +
   geom_line() +
-  geom_point(position = position_dodge(width = dodge_width)) +
+  #geom_point(position = position_dodge(width = dodge_width)) +
   geom_errorbar(aes(ymin = Average_Trust - se, ymax = Average_Trust + se), 
                 width = 0.4, position = position_dodge(width = dodge_width)) +
   theme_classic() +

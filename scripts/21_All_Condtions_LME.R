@@ -183,4 +183,5 @@ plot_ly(data = data_long, x = ~Trust, y = ~Confidence, z = ~Reliance,
         type = 'scatter3d', mode = 'markers',
         color = ~Reliability)
 
+flexplot(data=data_long, Trust ~ Confidence + Condition, method="lm")
 

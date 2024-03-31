@@ -7,6 +7,7 @@ data_long <- load_processed_data_long()
 # Figure Parameters
 source(here('scripts', 'Figure_Parameters.R'))
 
+
 # Models
 
 model_1 <- lmer(data = data_long, Trust ~ Condition * Block * Confidence + (1 | Participant))
@@ -41,9 +42,6 @@ tab_model(model_7)
 model_8 <- lmer(data = data_long, Reliance ~ Condition * Reliability * Confidence * Trust + (1 | Participant))
 summary(model_8)
 tab_model(model_8)
-
-# mutliply reliance by 100
-data_long$Reliance_100 <- data_long$Reliance * 100
 
 model_9 <- lmer(data = data_long, Reliance_100 ~ Condition * Reliability * Confidence * Trust + (1 + Condition | Participant))
 summary(model_9)
@@ -344,3 +342,6 @@ flexplot(data = data_long, Reliance~ Trust + ConfidenceQuantile, method = "lm")
 
 flexplot(data=data_long, Trust ~ Confidence + Reliability_Factor | Condition, method="lm")
 flexplot(data=data_long, Trust ~ Reliability_Factor + ConfidenceQuantile | Condition, method='lm')
+
+
+
