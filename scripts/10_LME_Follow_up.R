@@ -56,6 +56,8 @@ corrplot(cor, method = "circle")
 
 # This next section has been commented out because it is exploratory and not
 # necessary for the final analysis. It is left here for future reference.
+# Note the some of the libraries bellow will overwrite the libraries that are 
+# currently loaded, causing issues with the current analysis.
 
 # # Check for Overdispersion
 # library(blmeco)

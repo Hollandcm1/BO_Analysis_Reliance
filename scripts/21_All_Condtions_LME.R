@@ -7,7 +7,12 @@ data_long <- load_processed_data_all_conditions_long()
 # Figure Parameters
 source(here('scripts', 'Figure_Parameters.R'))
 
-# Models
+# Data manipulation
+data_long$Reliability_factor <- as.factor(data_long$Reliability)
+
+##############
+### Models ###
+##############
 
 model_1 <- lmer(data = data_long, Trust ~ Condition * Block * Confidence + (1 | Participant))
 summary(model_1)
@@ -37,9 +42,14 @@ model_7 <- lmer(data = data_long, Trust ~ Condition * Reliability * Confidence *
 summary(model_7)
 tab_model(model_7)
 
+# Best Model
+################################################################################
 model_8 <- lmer(data = data_long, Reliance ~ Condition * Reliability * Confidence * Trust + (1 | Participant))
 summary(model_8)
 tab_model(model_8)
+################################################################################
+
+# Exploritory Models
 
 model_9 <- lmer(data = data_long, Performance_Before ~ Trust * Condition * Reliability * Confidence + (1 | Participant))
 summary(model_9)
@@ -48,16 +58,24 @@ tab_model(model_9)
 model_10 <- lmer(data = data_long, Performance_After ~ Trust * Condition * Reliability * Confidence + (1 | Participant))
 summary(model_10)
 tab_model(model_10)
+# Interesting that there is actually a 4-way interaction going on here
 
+# Note: It's probably overkill including all conditions in these models. 
+# It would likely also be better practice to pick and chose which things you 
+# care about seeing differences in before running these models. (i.e., go 
+# back to the hypotheses that you had originally creaeted)
 
-# Moving forward with model_8 
+###################################
+### Moving forward with model_8 ###
+###################################
+# Exploring the Model 
+# All of this needs to be cleaned up....
 model_8
 tab_model(model_8)
 plot(model_8)
 emmeans(model_8, pairwise ~ Condition | Reliability, adjust = "tukey")
 flexplot(Reliance~Trust + Condition, data=data_long)
 flexplot(Reliance~Trust + Condition, data=data_long, method="lm")
-data_long$Reliability_factor <- as.factor(data_long$Reliability)
 flexplot(Reliance~Trust + Condition | Reliability_factor + Confidence, data=data_long)
 flexplot(Reliance~Trust + Condition | Reliability_factor + Confidence, data=data_long, method="lm")
 flexplot(Reliance~Trust + Condition | Reliability_factor + Confidence, data=data_long, method="lm", se=TRUE)
@@ -71,39 +89,38 @@ flexplot(Reliance~Trust + Reliability_factor, data=data_long, method="lm")
 flexplot(Reliance~Trust + Condition, data=data_long, method="lm")
 flexplot(Reliance~Confidence + Reliability_factor | Condition, data=data_long, method="lm")
 emmeans(model_8, c("Condition", "Reliability"))
-
-data_long$Reliability_factor <- as.factor(data_long$Reliability)
 flexplot(Trust~Confidence + Reliability_factor, data=data_long, method="lm")
 flexplot(Trust~Confidence, data=data_long, method="lm")
-
 flexplot(Reliance~Trust + Confidence + Reliability | Condition, data=data_long, method="lm")
-
 emmeans_model <- emmeans(model_8, ~ Condition * Reliability * Confidence * Trust)
-contrast_results <- contrast(emmeans_model, "pairwise", by = "Condition")
-summary(contrast_results, adjust = "bonferroni")
 
-estimates(model_8)
+# Something is wrong here 
+# contrast_results <- contrast(emmeans_model, "pairwise", by = "Condition")
+# summary(contrast_results, adjust = "bonferroni")
+# 
+# estimates(model_8)
+# 
+# mean_confidence <- mean(data_long$Confidence, na.rm = TRUE)
+# sd_confidence <- sd(data_long$Confidence, na.rm = TRUE)
+# 
+# emm <- emmeans(model_8, specs = ~ Condition * Reliability * Confidence, 
+#                at = list(Reliability = c(50, 60, 70, 80, 90, 100), 
+#                          Confidence = c(mean_confidence - sd_confidence, 
+#                                         mean_confidence, 
+#                                         mean_confidence + sd_confidence)))
+# summary(emm)
+# contrasts_emm <- contrast(emm, method = "pairwise", by = "Condition", adjust = "none")
+# summary(contrasts_emm)
+# 
+# emmip(model_8, Condition ~ Reliability | Trust)
+# emmip(model_8, Condition ~ Reliability)
+# emmip(model_8, Trust ~ Reliability)
+# emmip(model_8, Reliability ~ Confidence, at = list(Confidence = quantile(data_long$Confidence, probs = c(0.25, 0.5, 0.75))))
 
-mean_confidence <- mean(data_long$Confidence, na.rm = TRUE)
-sd_confidence <- sd(data_long$Confidence, na.rm = TRUE)
 
-emm <- emmeans(model_8, specs = ~ Condition * Reliability * Confidence, 
-               at = list(Reliability = c(50, 60, 70, 80, 90, 100), 
-                         Confidence = c(mean_confidence - sd_confidence, 
-                                        mean_confidence, 
-                                        mean_confidence + sd_confidence)))
-summary(emm)
-contrasts_emm <- contrast(emm, method = "pairwise", by = "Condition", adjust = "none")
-summary(contrasts_emm)
-
-emmip(model_8, Condition ~ Reliability | Trust)
-emmip(model_8, Condition ~ Reliability)
-emmip(model_8, Trust ~ Reliability)
-emmip(model_8, Reliability ~ Confidence, at = list(Confidence = quantile(data_long$Confidence, probs = c(0.25, 0.5, 0.75))))
-
-
-
-# Visualize
+#################
+### Visualize ###
+#################
 g1 <- ggplot(data_long, aes(x = Confidence, y = Trust, color = as.factor(Block), group = as.factor(Block))) +
   geom_jitter(size = 0.5, alpha = 0.3) + 
   geom_smooth(method = 'lm', alpha = 0.2) + 
@@ -117,6 +134,8 @@ g1 <- ggplot(data_long, aes(x = Confidence, y = Trust, color = as.factor(Block),
   ylim(0, 100) +
   xlim(0, 100)
 print(g1)
+ggsave(here('output','figures','21_Trust_by_Self-Confidence_by_Block_by_Condition.png'), 
+       plot = g1, device = device, width = width, height = height, units = units, dpi = dpi)
 
 g2 <- ggplot(data_long, aes(x = Confidence, y = Trust, color = as.factor(Reliability), group = as.factor(Reliability))) +
   geom_jitter(size = 0.5, alpha = 0.3) + 
@@ -131,7 +150,8 @@ g2 <- ggplot(data_long, aes(x = Confidence, y = Trust, color = as.factor(Reliabi
   ylim(0, 100) +
   xlim(0, 100)
 print(g2)
-
+ggsave(here('output','figures','21_Trust_by_Self-Confidence_by_Reliability_by_Condition.png'), 
+       plot = g2, device = device, width = width, height = height, units = units, dpi = dpi)
 
 g4 <- ggplot(data_long, aes(x = Trust, y = Reliance, color = as.factor(Reliability), group = as.factor(Reliability))) +
   geom_jitter(size = 0.5, alpha = 0.3) + 
@@ -141,15 +161,13 @@ g4 <- ggplot(data_long, aes(x = Trust, y = Reliance, color = as.factor(Reliabili
   theme(axis.line=element_line()) +
   labs(title = "Reliance as a funciton of Trust",
        x = "Trust",
-       y = "Reliance",
+       y = "Dependence",
        color = "Reliability") +
   ylim(0, 1) +
   xlim(0, 100)
 print(g4)
-ggsave(here('output','figures','22_Trust_by_Reliance_by_Condition.png'), 
+ggsave(here('output','figures','21_Trust_by_Dependence_by_Condition.png'), 
        plot = g4, device = device, width = width, height = height, units = units, dpi = dpi)
-
-
 
 g6 <- ggplot(data_long, aes(x = Confidence, y = Reliance, color = as.factor(Reliability), group = as.factor(Reliability))) +
   geom_jitter(size = 0.5, alpha = 0.3) + 
@@ -159,20 +177,21 @@ g6 <- ggplot(data_long, aes(x = Confidence, y = Reliance, color = as.factor(Reli
   theme(axis.line=element_line()) +
   labs(title = "Trust as a function of self-confidence",
        x = "Confidence",
-       y = "Reliance",
+       y = "Dependence",
        color = "Reliability") +
   ylim(0, 1) +
   xlim(0, 100)
 print(g6)
-ggsave(here('output','figures','22_Reliance_by_Confidence_by_Reliability_by_Condition.png'), 
+ggsave(here('output','figures','21_Dependence_by_Confidence_by_Reliability_by_Condition.png'), 
        plot = g6, device = device, width = width, height = height, units = units, dpi = dpi)
 
-
+#####################
+### Other Visuals ###
+#####################
+# These are pretty exploratory
 flexplot(Trust~Confidence, data = data_long, method = "lm")
 
 flexplot(Reliance~Trust + Confidence, data = data_long, method = "lm")
-
-
 
 plot_ly(data = data_long[data_long$Condition == "50% Increasing", ] , x = ~Trust, y = ~Confidence, z = ~Reliance,
         type = 'scatter3d', mode = 'markers',

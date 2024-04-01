@@ -1,9 +1,11 @@
 # Preprocessing All Conditions
 
-# Preprocessing
+# Very similar to the original preprocessing script, but now we are using 
+# all conditions. Note that once this is run, it saves the data so that it
+# can be accessed again withhout running this script.
 
 # Origianl data
-# str(data)
+source(here('scripts', '01_Load_Data.R'))
 
 data_all_conditions <- data_original
 
