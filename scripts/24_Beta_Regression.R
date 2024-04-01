@@ -1,5 +1,11 @@
 # Beta Regression
 
+# This form of regression will hopefully help solve some of the issues seen in
+# the original LME (script 10 / 11). Specifically, the residuals were not normally
+# distributed, which is a violation of the assumptions of the LME. This is likely
+# due to the fact that the data is bounded between 0 and 1, and anchoring to 
+# either side.
+
 source(here('scripts', 'Other_Functions.R'))
 data <- load_processed_data_all_conditions()
 data_long <- load_processed_data_all_conditions_long()

@@ -63,8 +63,8 @@ g3 <- ggplot(summary_data, aes(x = Block, y = Average_Reliance, group = Conditio
   geom_ribbon(aes(ymin = Average_Reliance - se, ymax = Average_Reliance + se),
               alpha = 0.1, position = position_dodge(width = dodge_width)) +
   theme_classic() +
-  scale_color_manual(values = c("Decreasing" = colour.decreasing, "Increasing" = colour.increasing)) +
-  scale_fill_manual(values = c("Decreasing" = colour.decreasing, "Increasing" = colour.increasing)) +
+  #scale_color_manual(values = c("Decreasing" = colour.decreasing, "Increasing" = colour.increasing)) +
+  #scale_fill_manual(values = c("Decreasing" = colour.decreasing, "Increasing" = colour.increasing)) +
   labs(title = "Average Dependence across Conditions with Standard Error",
        x = "Block",
        y = "Dependence",
@@ -76,7 +76,3 @@ g3 <- ggplot(summary_data, aes(x = Block, y = Average_Reliance, group = Conditio
 print(g3)
 ggsave(here('output','figures','23_Dependence_by_Block_by_Condition_with_SE_as_Ribbon.png'), 
        plot = g3, device = device, width = width, height = height, units = units, dpi = dpi)
-
-
-# 
-g4 <- ggplot()

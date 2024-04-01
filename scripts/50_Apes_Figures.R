@@ -6,18 +6,6 @@ data_long <- load_processed_data_all_conditions_long()
 # Figure Parameters
 source(here('scripts', 'Figure_Parameters.R'))
 
-# Summarize Data for plot 
-
-
-
-ggplot(data_long, aes(x=Block, y=Trust, color=Condition)) +
-  geom_point() +
-  geom_smooth(method="lm", se=FALSE) +
-  theme_classic() +
-  theme(legend.position = "none") +
-  labs(title="Trust by Block and Condition", x="Block", y="Trust")
-
-
 # Create Summary Data For Next Figures
 summary_data <- data_long %>% # calculate trust
   group_by(Condition, Block) %>%
@@ -33,7 +21,6 @@ ggplot(summary_data, aes(x=Block, y=Average_Trust, color=Condition)) +
   theme_classic() +
   labs(title="Trust by Block and Condition", x="Block", y="Trust") +
   ylim(75, 85) 
-
 
 ggplot(data_long, aes(x=Block, y=Reliance, color=Condition)) +
   geom_jitter(alpha=0.4, height=0, width=0.2) +
@@ -59,10 +46,6 @@ ggplot(data_long, aes(x=Reliance, y=Performance_After, color=Condition)) +
         axis.title.x = element_text(size = 12), # Increase x-axis title font size
         axis.title.y = element_text(size = 12)) # Increase y-axis label font size if needed
 
-data_long$Reliability
-flexplot(data_long, Reliance ~ Reliability + Condition, method='lm')
-
-
 ggplot(data_long, aes(x=Reliability, y=Reliance, color=Condition)) +
   geom_jitter(alpha=0.4, height=0.01, width=1.5) +
   #geom_point(alpha=0.4) +
@@ -76,7 +59,6 @@ ggplot(data_long, aes(x=Reliability, y=Reliance, color=Condition)) +
         axis.title.x = element_text(size = 12), # Increase x-axis title font size
         axis.title.y = element_text(size = 12)) # Increase y-axis label font size if needed
 
-
 ggplot(data_long, aes(x=Reliability, y=Reliance, color=Condition)) +
   geom_jitter(alpha=0.4, height=0.01, width=1.5) +
   #geom_point(alpha=0.4) +
@@ -89,7 +71,6 @@ ggplot(data_long, aes(x=Reliability, y=Reliance, color=Condition)) +
         axis.text.y = element_text(size = 12),
         axis.title.x = element_text(size = 12), # Increase x-axis title font size
         axis.title.y = element_text(size = 12)) # I
-
 
 ggplot(data_long, aes(x=Trust, y=Reliance, color=Condition)) +
   geom_jitter(alpha=0.4, height=0.01, width=1.5) +

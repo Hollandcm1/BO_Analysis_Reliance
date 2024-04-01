@@ -7,6 +7,12 @@ data_long <- load_processed_data_all_conditions_long()
 # Figure Parameters
 source(here('scripts', 'Figure_Parameters.R'))
 
+# Create Summary Data For Next Figures
+summary_data <- data_long %>% # calculate trust
+  group_by(Condition, Block) %>%
+  summarise(Average_Trust = mean(Trust, na.rm = TRUE),
+            se = sd(Trust, na.rm = TRUE) / sqrt(n()))  # Standard Error
+
 # ANOVA
 model <- aov(data = data_long, Trust ~ Condition * Block + Error(Participant / Block))
 model_summary <- summary(model)
@@ -25,12 +31,6 @@ g1 <- ggplot(data_long, aes(x=Block, y=Trust, color=Condition, group=Condition))
 print(g1)
 ggsave(here('output','figures','22_Trust_by_Block_by_Condition.png'), 
        plot = g1, device = device, width = width, height = height, units = units, dpi = dpi)
-
-# Create Summary Data For Next Figures
-summary_data <- data_long %>% # calculate trust
-  group_by(Condition, Block) %>%
-  summarise(Average_Trust = mean(Trust, na.rm = TRUE),
-            se = sd(Trust, na.rm = TRUE) / sqrt(n()))  # Standard Error
 
 # Visualize Interaction with Standard Error
 dodge_width <- 0.2 # seperation between conditions
@@ -72,6 +72,6 @@ g3 <- ggplot(summary_data, aes(x = Block, y = Average_Trust, group = Condition, 
   geom_point(data = data_long, aes(x = Block, y = Trust, color = Condition), 
              position = position_jitterdodge(jitter.width = 0.2, dodge.width = dodge_width), alpha = 0.5)
 print(g3)
-ggsave(here('output','figures','2_Trust_by_Block_by_Condition_with_SE_as_Ribbon.png'), 
+ggsave(here('output','figures','22_Trust_by_Block_by_Condition_with_SE_as_Ribbon.png'), 
        plot = g3, device = device, width = width, height = height, units = units, dpi = dpi)
 

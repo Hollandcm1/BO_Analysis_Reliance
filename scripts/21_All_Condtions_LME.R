@@ -188,7 +188,7 @@ ggsave(here('output','figures','21_Dependence_by_Confidence_by_Reliability_by_Co
 #####################
 ### Other Visuals ###
 #####################
-# These are pretty exploratory
+# These are pretty exploratory - these should probably get their own script at some point
 flexplot(Trust~Confidence, data = data_long, method = "lm")
 
 flexplot(Reliance~Trust + Confidence, data = data_long, method = "lm")
