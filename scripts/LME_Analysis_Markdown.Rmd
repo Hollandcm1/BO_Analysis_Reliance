@@ -1,0 +1,394 @@
+---
+title: "LME_Analysis"
+author: "Chris Holland"
+date: "2024-04-18"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3  # Adjust depth of headers included in TOC (1 = h1, 2 = h1-h2, 3 = h1-h2-h3)
+    toc_float: 
+      collapsed: false
+      smooth_scroll: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
+library(here)
+library(dplyr)
+library(lme4)
+library(sjPlot)
+library(corrplot)
+library(ggplot2)
+library(flexplot)
+library(beeswarm)
+```
+
+# Load Data
+
+```{r}
+# Load Data
+source(here('scripts', 'Other_Functions.R'))
+data <- load_processed_data_all_conditions()
+data_long <- load_processed_data_all_conditions_long()
+data_long$Condition_num <- as.numeric(data_long$Condition)
+```
+
+```{r}
+
+# Figure Parameters
+source(here('scripts', 'Figure_Parameters.R'))
+```
+
+```{r}
+# Data manipulation
+data_long$Reliability_factor <- as.factor(data_long$Reliability)
+data_long$Block_factor <- as.factor(data_long$Block)
+
+# Subsets
+data_long_50 <-  data_long %>% 
+  filter(Condition == '50% Decreasing' | Condition == '50% Increasing')
+# remove the other possible factors
+data_long_50$Condition <- factor(data_long_50$Condition, levels = c('50% Decreasing', '50% Increasing'))
+# repalce with 1 or 2
+data_long_50$Condition_num <- as.numeric(data_long_50$Condition)
+
+data_long_70 <-  data_long %>%
+  filter(Condition == '70% Decreasing' | Condition == '70% Increasing')
+# remove the other possible factors
+data_long_70$Condition <- factor(data_long_70$Condition, levels = c('70% Decreasing', '70% Increasing'))
+# repalce with 1 or 2
+data_long_70$Condition_num <- as.numeric(data_long_70$Condition)
+
+```
+
+# Basic Visuals
+### Histograms
+```{r}
+# ggplot histogram of trust
+g1 <- ggplot(data_long, aes(x=Trust)) + 
+  geom_histogram(position = "dodge", bins = 100) +
+  theme_classic() +
+  labs(title = "Trust", x = "Trust", y = "Frequency") 
+print(g1)
+
+# ggplot histogram of confidence
+g2 <- ggplot(data_long, aes(x=Confidence)) + 
+  geom_histogram(position = "dodge", bins = 100) +
+  theme_classic() +
+  labs(title = "Confidence", x = "Confidence", y = "Frequency")
+print(g2)
+
+# ggplot histogram of reliance
+g3 <- ggplot(data_long, aes(x=Reliance)) + 
+  geom_histogram(position = "dodge", bins = 100) +
+  theme_classic() +
+  labs(title = "Reliance", x = "Reliance", y = "Frequency")
+print(g3)
+
+```
+
+### Correlations
+```{r}
+
+# Show Correlations
+cor <- cor(data_long[,c("Trust", "Reliability", "Confidence", "Reliance", "Condition_num", "Performance_Before", "Performance_After")])
+corrplot(cor, method = "circle")
+
+```
+
+### Data Checks
+```{r}
+# Assumptions
+# Normality
+qqnorm(data_long$Trust)
+qqline(data_long$Trust)
+
+qqnorm(data_long$Confidence)
+qqline(data_long$Confidence)
+
+qqnorm(data_long$Reliance)
+qqline(data_long$Reliance)
+
+# Homoscedasticity
+plot(data_long$Trust ~ data_long$Reliability)
+plot(data_long$Trust ~ data_long$Confidence)
+plot(data_long$Trust ~ data_long$Reliance)
+plot(data_long$Trust ~ data_long$Performance_After)
+plot(data_long$Reliance ~ data_long$Reliability)
+plot(data_long$Reliance ~ data_long$Confidence)
+plot(data_long$Reliance ~ data_long$Performance_After)
+plot(data_long$Confidence ~ data_long$Reliability)
+plot(data_long$Confidence ~ data_long$Performance_After)
+plot(data_long$Performance_After ~ data_long$Reliability)
+
+# Sphericity
+shapiro.test(data_long$Trust)
+shapiro.test(data_long$Confidence)
+shapiro.test(data_long$Reliance)
+shapiro.test(data_long$Performance_Before)
+shapiro.test(data_long$Performance_After)
+
+```
+
+
+# 50% Models
+## Trust
+### Model
+```{r}
+# Everything Model
+m50_1 <- lmer(data = data_long_50, Trust ~ Condition * Reliability * Confidence * Reliance * (1 | Participant))
+summary(m50_1)
+tab_model(m50_1)
+
+```
+
+
+### Visualizations
+```{r}
+
+# Visualize Trust by Confidence
+g1 <- ggplot(data_long_50, aes(x=Confidence, y=Trust)) + 
+  geom_smooth(alpha = 0.5, method = 'lm') + 
+  geom_point() +
+  theme_classic() +
+  labs(title = "Trust by Confidence", x = "Confidence", y = "Trust") +
+  theme(plot.title = element_text(size=title_size)) +
+  xlim(0, 100) + 
+  ylim(0, 100)
+print(g1)
+
+# Visualize Interactions (Condition, Reliance)
+g2 <- ggplot(data_long_50, aes(x=Reliance, y=Trust, color=Condition)) + 
+  geom_smooth(alpha = 0.5, method = 'lm') + 
+  geom_point() +
+  theme_classic() +
+  labs(title = "Trust by Reliance by Condition", x = "Reliance", y = "Trust") +
+  theme(plot.title = element_text(size=title_size)) +
+  xlim(0, 1) + 
+  ylim(0, 100)
+print(g2)
+
+# Visualize Interactions (Condition, Reliability, Reliance)
+g3 <- ggplot(data_long_50, aes(x=Reliance, y=Trust, color=Reliability_factor, group=Reliability_factor)) + 
+  geom_smooth(alpha = 0.1, method = 'lm') + 
+  geom_point() +
+  theme_classic() +
+  labs(title = "Trust by Reliance by Reliability", x = "Reliance", y = "Trust") +
+  theme(plot.title = element_text(size=title_size)) +
+  facet_wrap(~Condition) +
+  xlim(0, 1) + 
+  ylim(0, 100)
+print(g3)
+
+# Visualize most complex interaction (just for fun)
+# g4 <- ggplot(data_long_50, aes(x=Reliance, y=Trust, color=Reliability_factor, group=Reliability_factor)) + 
+#   geom_smooth(alpha = 0.1, method = 'lm') + 
+#   geom_point() +
+#   theme_classic() +
+#   labs(title = "Trust by Reliance by Reliability", x = "Reliance", y = "Trust") +
+#   theme(plot.title = element_text(size=title_size)) +
+#   facet_wrap(~Condition * Reliability_factor) +
+#   xlim(0, 1) + 
+#   ylim(0, 100)
+# print(g4)
+
+flexplot(data = data_long_50, Trust ~ Reliance + Reliability_factor | Condition + Confidence, method = 'lm')
+
+```
+
+## Dependence (Reliance)
+### Model
+```{r}
+# Everything Model
+m50_2 <- lmer(data = data_long_50, Reliance ~ Condition * Reliability * Confidence * Trust * (1 | Participant))
+summary(m50_2)
+tab_model(m50_2)
+
+```
+
+### Visualizations
+```{r}
+
+# Visualize Dependence by Trust
+g1 <- ggplot(data_long_50, aes(x=Trust, y=Reliance)) + 
+  geom_smooth(alpha = 0.5, method = 'lm') + 
+  geom_point() +
+  theme_classic() +
+  labs(title = "Dependence by Trust", x = "Trust", y = "Dependence") +
+  theme(plot.title = element_text(size=title_size)) +
+  xlim(0, 100) + 
+  ylim(0, 1)
+print(g1)
+
+# Visualize Dependence by Trust and Condition
+g2 <- ggplot(data_long_50, aes(x=Trust, y=Reliance, color=Condition)) + 
+  geom_smooth(alpha = 0.5, method = 'lm') + 
+  geom_point() +
+  theme_classic() +
+  labs(title = "Dependence by Trust by Condition", x = "Trust", y = "Dependence") +
+  theme(plot.title = element_text(size=title_size)) +
+  xlim(0, 100) + 
+  ylim(0, 1)
+print(g2)
+
+# Visualize Dependence by Trust and Reliability
+g3 <- ggplot(data_long_50, aes(x=Trust, y=Reliance, color=Reliability_factor, group=Reliability_factor)) + 
+  geom_smooth(alpha = 0.1, method = 'lm') + 
+  geom_point() +
+  theme_classic() +
+  labs(title = "Dependence by Trust by Reliability", x = "Trust", y = "Dependence") +
+  theme(plot.title = element_text(size=title_size)) +
+  facet_wrap(~Condition) +
+  xlim(0, 100) + 
+  ylim(0, 1)
+print(g3)
+
+# Remove Reliability and add Confidence
+flexplot(data = data_long_50, Reliance ~ Trust + Confidence | Condition, method = 'lm', se = TRUE)
+
+# Visualize most complex interaction 
+flexplot(data = data_long_50, Reliance ~ Trust + Reliability_factor | Condition + Confidence, method = 'lm')
+
+
+```
+
+## Performance
+### Model
+```{r}
+
+# Everything Model
+m50_3 <- lmer(data = data_long_50, Performance_After ~ Condition * Reliability * Confidence * Trust * Reliance * (1 | Participant))
+summary(m50_3)
+tab_model(m50_3)
+
+```
+
+### Visualizations
+```{r}
+
+# trust by performance
+g1 <- ggplot(data_long_50, aes(x=Trust, y=Performance_After)) + 
+  geom_smooth(alpha = 0.5, method = 'lm') + 
+  geom_point() +
+  theme_classic() +
+  labs(title = "Performance After by Trust by Condition", x = "Trust", y = "Performance After") +
+  theme(plot.title = element_text(size=title_size)) +
+  xlim(0, 100) + 
+  ylim(0, 1)
+print(g1)
+
+```
+
+
+# 70% Models
+## Trust
+### Model
+
+```{r}
+
+# Everything Model
+m70_1 <- lmer(data = data_long_70, Trust ~ Condition * Reliability * Confidence * Reliance * (1 | Participant))
+summary(m70_1)
+tab_model(m70_1)
+
+```
+
+### Visualizations
+```{r}
+
+# Visualize Condition by reliance
+g1 <- ggplot(data_long_70, aes(x=Reliance, y=Trust, color=Condition)) + 
+  geom_smooth(alpha = 0.5, method = 'lm') + 
+  geom_point() +
+  theme_classic() +
+  labs(title = "Trust by Reliance by Condition", x = "Reliance", y = "Trust") +
+  theme(plot.title = element_text(size=title_size)) +
+  xlim(0, 1) + 
+  ylim(0, 100)
+print(g1)
+
+# Condition bu Reliability by Reliance
+g2 <- ggplot(data_long_70, aes(x=Reliance, y=Trust, color=Reliability_factor, group=Reliability_factor)) + 
+  geom_smooth(alpha = 0.1, method = 'lm') + 
+  geom_point() +
+  theme_classic() +
+  labs(title = "Trust by Reliance by Reliability", x = "Reliance", y = "Trust") +
+  theme(plot.title = element_text(size=title_size)) +
+  facet_wrap(~Condition) +
+  xlim(0, 1) + 
+  ylim(0, 100)
+print(g2)
+
+# Condition by Reliability by Reliance by Confidence
+flexplot(data = data_long_70, Trust ~ Reliance + Reliability_factor | Condition + Confidence, method = 'lm')
+
+```
+
+## Dependence (Reliance)
+### Model
+```{r}
+# Everything Model
+m70_2 <- lmer(data = data_long_70, Reliance ~ Condition * Reliability * Confidence * Trust * (1 | Participant))
+summary(m70_2)
+tab_model(m70_2)
+
+```
+
+### Visualizations
+Aparently othing in the model matters.... so no visuals
+```{r}
+
+```
+
+## Performance
+### Model
+```{r}
+
+# Everything Model
+m70_3 <- lmer(data = data_long_70, Performance_After ~ Condition * Reliability * Confidence * Trust * Reliance * (1 | Participant))
+summary(m70_3)
+tab_model(m70_3)
+
+
+```
+
+### Visualizations
+```{r}
+
+# performance by condition
+# g1 <- ggplot(data_long_70, aes(x=Condition_num, y=Performance_After)) + 
+#   geom_smooth(mehtod='lm') +
+#   geom_beeswarm() +
+#   theme_classic() +
+#   theme(plot.title = element_text(size=title_size)) +
+#   ylim(0, 1)
+# print(g1)
+
+flexplot(data = data_long_70, Performance_After ~ Condition, method = 'lm')
+
+# Condition by Confidence
+flexplot(data = data_long_70, Performance_After ~ Condition + Confidence, method = 'lm')
+
+g2 <- ggplot(data_long_70, aes(x=Confidence, y=Performance_After, color=Condition)) + 
+  geom_smooth(alpha = 0.5, method = 'lm') + 
+  geom_point() +
+  theme_classic() +
+  labs(title = "Performance After by Confidence by Condition", x = "Confidence", y = "Performance After") +
+  theme(plot.title = element_text(size=title_size)) +
+  xlim(0, 100) + 
+  ylim(0, 1)
+print(g2)
+
+# Condition by Confidence by Trust
+flexplot(data = data_long_70, Performance_After ~ Confidence + Trust | Condition, method = 'lm')
+
+flexplot(data = data_long_70, Performance_After ~ Trust + Condition | Confidence, method = 'lm')
+
+# Condition by Reliability, by Confidence, by Trust
+flexplot(data = data_long_70, Performance_After ~ Trust + Confidence | Condition + Reliability_factor, method = 'lm')
+
+```
+
