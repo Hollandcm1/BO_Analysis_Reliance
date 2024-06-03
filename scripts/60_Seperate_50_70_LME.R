@@ -1,7 +1,7 @@
 # 60_Seperate_50_70_LME
 
-library(ggbeeswarm)
 
+# Load Data
 source(here('scripts', 'Other_Functions.R'))
 data <- load_processed_data_all_conditions()
 data_long <- load_processed_data_all_conditions_long()
