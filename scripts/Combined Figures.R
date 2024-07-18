@@ -4,6 +4,7 @@ library(here)
 library(ggplot2)
 library(ggpubr)
 library(dplyr)
+library(sjPlot)
 
 source(here('scripts', 'Other_Functions.R'))
 data <- load_processed_data()
@@ -34,15 +35,17 @@ g1 <- ggplot(summary_data, aes(x = Block, y = Average_Performance_Before, group 
   theme_classic() +
   scale_color_manual(values = c("Decreasing" = colour.decreasing, "Increasing" = colour.increasing)) +
   scale_fill_manual(values = c("Decreasing" = colour.decreasing, "Increasing" = colour.increasing)) +
-  labs(title = "Average Performance Before across Conditions with Standard Error as Ribbon",
+  labs(title = "Initial Performance",
        x = "Block",
-       y = "Performance Before",
+       y = "Performance",
        color = "Condition") +
   ylim(0, 1) + 
   scale_x_continuous(breaks = seq(1, 6, 1)) +
   geom_point(data = data_long, aes(x = Block, y = Performance_Before, color = Condition), 
              position = position_jitterdodge(jitter.width = 0.2, dodge.width = dodge_width), alpha = 0.5) +
-  theme(plot.title = element_text(size=title_size))
+  theme(plot.title = element_text(size=title_size)) + 
+  # remove legend
+  theme(legend.position = "none")
 print(g1)
 
 
@@ -60,9 +63,9 @@ g2 <- ggplot(summary_data, aes(x = Block, y = Average_Performance_After, group =
   theme_classic() +
   scale_color_manual(values = c("Decreasing" = colour.decreasing, "Increasing" = colour.increasing)) +
   scale_fill_manual(values = c("Decreasing" = colour.decreasing, "Increasing" = colour.increasing)) +
-  labs(title = "Average Performance After across Conditions with Standard Error as Ribbon",
+  labs(title = "Aided Performance",
        x = "Block",
-       y = "Performance After",
+       y = "Performance",
        color = "Condition") +
   ylim(0, 1) + 
   scale_x_continuous(breaks = seq(1, 6, 1)) +
@@ -75,4 +78,13 @@ print(g2)
 # Combined Figure
 g3 <- ggarrange(g1, g2, ncol = 2, nrow = 1)
 print(g3)
+
+# same figure but give more horizontal space to g2
+g4 <- ggarrange(g1, g2, ncol = 2, nrow = 1, widths = c(1, 1.5))
+print(g4)
+
+
+
+
+
 
