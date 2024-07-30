@@ -78,7 +78,8 @@ g2 <- ggplot(summary_data, aes(x = Block, y = Average_Performance_After, group =
   geom_point(data = data_long, aes(x = Block, y = Performance_After, color = Condition), 
              position = position_jitterdodge(jitter.width = jitter, dodge.width = dodge_width), alpha = alpha_points,
              size = point_size) +
-  theme(plot.title = element_text(size=title_size))
+  theme(plot.title = element_text(size=title_size)) +
+  theme(legend.position = c(0.8, 0.33))
 print(g2)
 
 
@@ -87,7 +88,7 @@ g3 <- ggarrange(g1, g2, ncol = 2, nrow = 1)
 print(g3)
 
 # same figure but give more horizontal space to g2
-g4 <- ggarrange(g1, g2, ncol = 2, nrow = 1, widths = c(1, 1.5))
+g4 <- ggarrange(g1, g2, ncol = 2, nrow = 1, widths = c(1, 1))
 print(g4)
 
 #save figure
@@ -112,7 +113,7 @@ g5 <- ggplot(summary_data, aes(x = Block, y = Average_Trust, group = Condition, 
   theme_classic() +
   scale_color_manual(values = c("Decreasing" = colour.decreasing, "Increasing" = colour.increasing)) +
   scale_fill_manual(values = c("Decreasing" = colour.decreasing, "Increasing" = colour.increasing)) +
-  labs(title = "Trust",
+  labs(#title = "Trust",
        x = "Block",
        y = "Trust",
        color = "Condition") +
@@ -144,7 +145,7 @@ g6 <- ggplot(summary_data, aes(x = Block, y = Average_Confidence, group = Condit
   theme_classic() +
   scale_color_manual(values = c("Decreasing" = colour.decreasing, "Increasing" = colour.increasing)) +
   scale_fill_manual(values = c("Decreasing" = colour.decreasing, "Increasing" = colour.increasing)) +
-  labs(title = "Self-Confidence",
+  labs(#title = "Self-Confidence",
        x = "Block",
        y = "Self-Confidence",
        color = "Condition") +
@@ -153,11 +154,12 @@ g6 <- ggplot(summary_data, aes(x = Block, y = Average_Confidence, group = Condit
   geom_point(data = data_long, aes(x = Block, y = Confidence, color = Condition), 
              position = position_jitterdodge(jitter.width = jitter, dodge.width = dodge_width), alpha = alpha_points,
              size = point_size) +
-  theme(plot.title = element_text(size=title_size))
+  theme(plot.title = element_text(size=title_size)) + 
+  theme(legend.position = c(0.8, 0.33))
 print(g6)
 
 # same figure but give more horizontal space to g2
-g7 <- ggarrange(g5, g6, ncol = 2, nrow = 1, widths = c(1, 1.5))
+g7 <- ggarrange(g5, g6, ncol = 2, nrow = 1, widths = c(1, 1))
 print(g7)
 
 #save figure

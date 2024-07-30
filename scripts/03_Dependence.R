@@ -77,3 +77,26 @@ g3 <- ggplot(summary_data, aes(x = Block, y = Average_Reliance, group = Conditio
 print(g3)
 ggsave(here('output','figures','03_Dependence_by_Block_by_Condition_with_SE_as_Ribbon.png'), 
        plot = g3, device = device, width = width, height = height, units = units, dpi = dpi)
+
+# Visualize Interaction with Standard Error as Ribbon
+dodge_width <- 0.2 # seperation between conditions
+g4 <- ggplot(summary_data, aes(x = Block, y = Average_Reliance, group = Condition, color = Condition, fill = Condition)) +
+  geom_line() +
+  geom_point(position = position_dodge(width = dodge_width)) +
+  geom_ribbon(aes(ymin = Average_Reliance - se, ymax = Average_Reliance + se),
+              alpha = 0.1, position = position_dodge(width = dodge_width)) +
+  theme_classic() +
+  scale_color_manual(values = c("Decreasing" = colour.decreasing, "Increasing" = colour.increasing)) +
+  scale_fill_manual(values = c("Decreasing" = colour.decreasing, "Increasing" = colour.increasing)) +
+  labs(#title = "Average Dependence across Conditions with Standard Error",
+       x = "Block",
+       y = "Dependence",
+       color = "Condition") +
+  ylim(0, 1) + 
+  scale_x_continuous(breaks = seq(1, 6, 1)) +
+  geom_point(data = data_long, aes(x = Block, y = Reliance, color = Condition), 
+             position = position_jitterdodge(jitter.width = 0.2, dodge.width = dodge_width), alpha = 0.5) +
+  theme(plot.title = element_text(size=title_size))
+print(g4)
+ggsave(here('output','figures','03_Dependence_by_Block_by_Condition_with_SE_as_Ribbon_no_title.png'), 
+       plot = g4, device = device, width = width, height = height, units = units, dpi = dpi)
