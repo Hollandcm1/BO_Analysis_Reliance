@@ -100,3 +100,37 @@ g4 <- ggplot(summary_data, aes(x = Block, y = Average_Reliance, group = Conditio
 print(g4)
 ggsave(here('output','figures','03_Dependence_by_Block_by_Condition_with_SE_as_Ribbon_no_title.png'), 
        plot = g4, device = device, width = width, height = height, units = units, dpi = dpi)
+
+
+# slope analysis
+slope_data <- data_long %>%
+  group_by(Participant, Condition) %>%
+  do({
+    mod <- lm(data = ., Reliance ~ Block)
+    data.frame(
+      Condition = .$Condition[1],
+      Participant = .$Participant[1],
+      slope = coef(mod)[2]
+    )
+  })
+
+slope_data$Condition <- factor(slope_data$Condition, levels = c("Decreasing", "Increasing"))
+
+g5 <- ggplot(slope_data, aes(x = Condition, y = slope, fill = Condition)) +
+  geom_boxplot() +
+  theme_classic() +
+  labs(title = "Slope of Dependence by Condition", x = "Condition", y = "Slope") +
+  scale_fill_manual(values = c("Decreasing" = colour.decreasing, "Increasing" = colour.increasing)) +
+  theme(plot.title = element_text(size=title_size))
+print(g5)
+
+# slope analysis v2 
+
+model <- lm(data = data_long, Reliance ~ Condition * Block)
+summary(model)
+
+library('interactions')
+simple_slopes <- sim_slopes(model, pred = Block, modx = Condition)
+print(simple_slopes)
+
+

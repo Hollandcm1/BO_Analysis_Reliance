@@ -84,3 +84,4 @@ ggplot(data_long, aes(x=Trust, y=Reliance, color=Condition)) +
         axis.text.y = element_text(size = 12),
         axis.title.x = element_text(size = 12), # Increase x-axis title font size
         axis.title.y = element_text(size = 12)) # Increase y-axis label font size if needed
+
